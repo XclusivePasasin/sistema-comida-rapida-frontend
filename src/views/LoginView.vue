@@ -32,6 +32,8 @@
             <h3 class="text-center mb-6" style="color: #6c757d">
               Sign in to your account
             </h3>
+            <!-- message error -->
+            <p v-if="errorMessage" class="error-message text-center">{{ errorMessage }}</p>
             <v-form @submit.prevent="onSubmit">
               <v-text-field
                 v-model="username"
@@ -42,6 +44,7 @@
                 class="mb-4"
                 rounded
                 required
+                
               ></v-text-field>
               <v-text-field
                 v-model="password"
@@ -74,43 +77,56 @@
   </template>
   
   <script>
-  import axios from "axios";
-  
-  export default {
-    data() {
-      return {
-        username: "",
-        password: "",
-        showPassword: false,
-      };
-    },
-    methods: {
-      async onSubmit() {
-        try {
-          const response = await axios.post("http://127.0.0.1:8000/api/users/login", {
-            username: this.username,
-            password: this.password,
-          });
-  
-          if (response.data.code === 200) {
-            console.log("Login Successful", response.data);
-            alert("Login Successful");
-            // Puedes redireccionar a otra página o almacenar los datos según tu lógica
-          } else {
-            alert(response.data.message || "Invalid username or password");
-          }
-        } catch (error) {
-          console.error("Error al iniciar sesión", error);
-          alert("Error en el inicio de sesión");
+import axios from "axios";
+
+export default {
+  data() {
+    return {
+      username: "",
+      password: "",
+      showPassword: false,
+      errorMessage: null, 
+    };
+  },
+  methods: {
+    async onSubmit() {
+      this.errorMessage = null; 
+      try {
+        const response = await axios.post("http://127.0.0.1:8000/api/users/login", {
+          username: this.username,
+          password: this.password,
+        });
+
+        if (response.data.code === 200) {
+          // store user data in localStorage
+          const information_user = response.data.user;
+          localStorage.setItem('user', JSON.stringify(information_user));
+          this.$router.push({ path: "/dashboard" });
+        } else {
+          this.errorMessage = response.data.message || "Invalid username or password";
         }
-      },
+      } catch (error) {
+        console.error("Login Error", error);
+        this.errorMessage = error.response?.data?.message || "Login Failed";
+      }
     },
-  };
-  </script>
+  },
+};
+</script>
+
   
   <style scoped>
+
   .fill-height {
     height: 100%;
   }
-  </style>
+
+  .error-message {
+  color: darkred;
+  font-size: 18px;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+</style>
   
