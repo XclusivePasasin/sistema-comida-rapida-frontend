@@ -5,16 +5,6 @@
 npm install
 ```
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
-
-### Compiles and minifies for production
-```
-npm run build
-```
-
 ### Install Axios
 ```
 npm install axios
@@ -23,6 +13,11 @@ npm install axios
 ```
 1 - npm install -D tailwindcss postcss autoprefixer
 2 - npx tailwindcss init -p
+
+```
+### Install Loadsh
+```
+1 - npm install lodash
 
 ```
 
