@@ -11,7 +11,7 @@
       <!-- Dynamic Content Area -->
       <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100">
         <div class="min-h-screen bg-gray-100 p-8">
-          <div class="max-w-7xl mx-auto">
+          <div class="max-w-full mx-auto">
             <div class="bg-white shadow-sm rounded-lg overflow-hidden">
               <div class="p-6">
                 <div class="flex justify-between items-center mb-6">
@@ -22,6 +22,7 @@
                       type="text"
                       placeholder="Search users..."
                       class="pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm rounded-xl"
+                      style="width: 100%;"
                     />
                     <div
                       class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
@@ -189,6 +190,7 @@
                 <!-- Modal Create User -->
                 <CreateUserModal
                   :isOpen="isCreateModalOpen"
+                  ref="createUserModal"
                   @close="closeCreateModal"
                   @create-user="createUser"
                 />
@@ -252,6 +254,8 @@ export default {
       this.sidebarOpen = !this.sidebarOpen;
     },
     openCreateModal() {
+      this.$refs.createUserModal.clearErrors(); 
+      this.$refs.createUserModal.clearForm();
       this.isCreateModalOpen = true;
     },
     closeCreateModal() {
