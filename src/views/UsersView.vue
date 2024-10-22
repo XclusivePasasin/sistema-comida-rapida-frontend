@@ -10,11 +10,14 @@
 
       <!-- Dynamic Content Area -->
       <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100">
-        <div class="min-h-screen bg-gray-100 p-8">
+        <div class="bg-gray-100 p-8">
           <div class="max-w-full mx-auto">
             <div class="bg-white shadow-sm rounded-lg overflow-hidden">
               <div class="p-6">
-                <div class="flex justify-between items-center mb-6">
+                <!-- Fixed Search and Button Section -->
+                <div
+                  class="flex justify-between items-center mb-6 sticky top-0 bg-white"
+                >
                   <div class="relative">
                     <input
                       v-model="searchTerm"
@@ -22,7 +25,7 @@
                       type="text"
                       placeholder="Search users..."
                       class="pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm rounded-xl"
-                      style="width: 100%;"
+                      style="width: 100%"
                     />
                     <div
                       class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
@@ -67,126 +70,153 @@
                     Create User
                   </button>
                 </div>
-                <table class="min-w-full divide-y divide-gray-200">
-                  <thead class="bg-gray-50">
-                    <tr>
-                      <th
-                        scope="col"
-                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                      >
-                        Username
-                      </th>
-                      <th
-                        scope="col"
-                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                      >
-                        Employee Name
-                      </th>
-                      <th
-                        scope="col"
-                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                      >
-                        Rol
-                      </th>
-                      <th
-                        scope="col"
-                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                      >
-                        Phone
-                      </th>
-                      <th
-                        scope="col"
-                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                      >
-                        Edit
-                      </th>
-                      <th
-                        scope="col"
-                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                      >
-                        Delete
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody class="bg-white divide-y divide-gray-200">
-                    <tr v-for="user in users" :key="user.id">
-                      <td
-                        class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-600"
-                      >
-                        {{ user.username }}
-                      </td>
-                      <td
-                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
-                      >
-                        {{ user.employee_name }}
-                      </td>
-                      <td
-                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
-                      >
-                        <span v-if="user.role === 'A'">Administrator</span>
-                        <span v-else-if="user.role === 'C'">Cashier</span>
-                        <span v-else>Waiter</span>
-                      </td>
 
-                      <td
-                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
-                      >
-                        {{ user.phone }}
-                      </td>
-                      <td
-                        class="px-6 py-4 whitespace-nowrap text-sm font-medium"
-                      >
-                        <button
-                          @click="openEditModal(user)"
-                          class="text-blue-600 hover:text-blue-900"
+                <!-- Table Section with Scroll -->
+                <div
+                  class="overflow-y-auto max-h-[400px] scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-gray-500"
+                >
+                  <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50 sticky top-0">
+                      <tr>
+                        <th
+                          scope="col"
+                          class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                         >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="24"
-                            height="24"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="2"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            class="lucide lucide-user-round-pen"
-                          >
-                            <path d="M2 21a8 8 0 0 1 10.821-7.487" />
-                            <path
-                              d="M21.378 16.626a1 1 0 0 0-3.004-3.004l-4.01 4.012a2 2 0 0 0-.506.854l-.837 2.87a.5.5 0 0 0 .62.62l2.87-.837a2 2 0 0 0 .854-.506z"
-                            />
-                            <circle cx="10" cy="8" r="5" />
-                          </svg>
-                        </button>
-                      </td>
-                      <td
-                        class="px-6 py-4 whitespace-nowrap text-sm font-medium"
-                      >
-                        <button
-                          @click="openDeleteModal(user)"
-                          class="text-red-600 hover:text-red-900"
+                          Username
+                        </th>
+                        <th
+                          scope="col"
+                          class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                         >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="24"
-                            height="24"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="2"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
+                          Employee Name
+                        </th>
+                        <th
+                          scope="col"
+                          class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                        >
+                          Rol
+                        </th>
+                        <th
+                          scope="col"
+                          class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                        >
+                          Phone
+                        </th>
+                        <th
+                          scope="col"
+                          class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                        >
+                          Edit
+                        </th>
+                        <th
+                          scope="col"
+                          class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                        >
+                          Delete
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                      <tr v-for="user in users" :key="user.id">
+                        <td
+                          class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-600"
+                        >
+                          {{ user.username }}
+                        </td>
+                        <td
+                          class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                        >
+                          {{ user.employee_name }}
+                        </td>
+                        <td
+                          class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                        >
+                          <span v-if="user.role === 'A'">Administrator</span>
+                          <span v-else-if="user.role === 'C'">Cashier</span>
+                          <span v-else>Waiter</span>
+                        </td>
+
+                        <td
+                          class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                        >
+                          {{ user.phone }}
+                        </td>
+                        <td
+                          class="px-6 py-4 whitespace-nowrap text-sm font-medium"
+                        >
+                          <button
+                            @click="openEditModal(user)"
+                            class="text-blue-600 hover:text-blue-900"
                           >
-                            <path d="M2 21a8 8 0 0 1 13.292-6"></path>
-                            <circle cx="10" cy="8" r="5"></circle>
-                            <path d="M22 19h-6"></path>
-                          </svg>
-                        </button>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="24"
+                              height="24"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              stroke-width="2"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              class="lucide lucide-user-round-pen"
+                            >
+                              <path d="M2 21a8 8 0 0 1 10.821-7.487" />
+                              <path
+                                d="M21.378 16.626a1 1 0 0 0-3.004-3.004l-4.01 4.012a2 2 0 0 0-.506.854l-.837 2.87a.5.5 0 0 0 .62.62l2.87-.837a2 2 0 0 0 .854-.506z"
+                              />
+                              <circle cx="10" cy="8" r="5" />
+                            </svg>
+                          </button>
+                        </td>
+                        <td
+                          class="px-6 py-4 whitespace-nowrap text-sm font-medium"
+                        >
+                          <button
+                            @click="openDeleteModal(user)"
+                            class="text-red-600 hover:text-red-900"
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="24"
+                              height="24"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              stroke-width="2"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                            >
+                              <path d="M2 21a8 8 0 0 1 13.292-6"></path>
+                              <circle cx="10" cy="8" r="5"></circle>
+                              <path d="M22 19h-6"></path>
+                            </svg>
+                          </button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <!-- Pagination Controls -->
+                <div class="flex justify-between items-center mt-4">
+                  <button
+                    @click="goToPage(currentPage - 1)"
+                    :disabled="currentPage === 1"
+                    class="px-4 py-2 bg-gray-200 rounded-lg text-sm"
+                  >
+                    Previous
+                  </button>
+
+                  <span>Page {{ currentPage }} of {{ totalPages }}</span>
+
+                  <button
+                    @click="goToPage(currentPage + 1)"
+                    :disabled="currentPage === totalPages"
+                    class="px-4 py-2 bg-gray-200 rounded-lg text-sm"
+                  >
+                    Next
+                  </button>
+                </div>
+
                 <!-- Modal Create User -->
                 <CreateUserModal
                   :isOpen="isCreateModalOpen"
@@ -247,6 +277,9 @@ export default {
       errorMessage: "",
       selectedUser: null,
       searchTerm: "",
+      currentPage: 1,
+      totalPages: 0,
+      perPage: 10,
     };
   },
   methods: {
@@ -254,7 +287,7 @@ export default {
       this.sidebarOpen = !this.sidebarOpen;
     },
     openCreateModal() {
-      this.$refs.createUserModal.clearErrors(); 
+      this.$refs.createUserModal.clearErrors();
       this.$refs.createUserModal.clearForm();
       this.isCreateModalOpen = true;
     },
@@ -279,12 +312,19 @@ export default {
       this.isDeleteModalOpen = false;
       this.selectedUser = null;
     },
-    async fetchUsers() {
+    async fetchUsers(page = 1) {
       try {
         const response = await axios.get(
-          "http://127.0.0.1:8000/api/users/select"
+          "http://127.0.0.1:8000/api/users/select",
+          {
+            params: {
+              page: page,
+            },
+          }
         );
-        this.users = response.data.users;
+        this.users = response.data.users.data;
+        this.currentPage = response.data.users.current_page;
+        this.totalPages = response.data.users.last_page;
         console.log("Users fetched:", this.users);
       } catch (error) {
         console.error(
@@ -331,12 +371,7 @@ export default {
           id_user: user.id_user,
           employee_name: user.employee_name,
           phone: user.phone,
-          role:
-            user.role === "Administrator"
-              ? "A"
-              : user.role === "Cashier"
-              ? "C"
-              : "M",
+          role: user.role,
         };
 
         if (user.password) {
@@ -402,6 +437,11 @@ export default {
     debouncedSearchUsers: debounce(function () {
       this.searchUsers();
     }, 300),
+
+    // Method for change page
+    goToPage(page) {
+      this.fetchUsers(page);
+    },
   },
   mounted() {
     this.fetchUsers();
