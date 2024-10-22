@@ -10,139 +10,397 @@
 
       <!-- Dynamic Content Area -->
       <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100">
-        <div class="p-4">
-          <v-card class="p-6"> 
-            <h1 class="text-2xl font-semibold text-center">User management </h1>
-            <v-container>
-              <v-row>
-                <!-- Primera fila -->
-                <v-col cols="12" md="6">
-                  <v-text-field
-                    v-model="form.username"
-                    label="Username"
-                    variant="outlined"
-                    rounded
-                    required
-                  ></v-text-field>
-                </v-col>
-
-                <v-col cols="12" md="6">
-                  <v-text-field
-                    v-model="form.name_employee"
-                    label="Name Employee"
-                    variant="outlined"
-                    rounded
-                    required
-                  ></v-text-field>
-                </v-col>
-              </v-row>
-
-              <v-row>
-                <!-- Segunda fila -->
-                <v-col cols="12" md="6">
-                  <v-text-field
-                    v-model="form.password"
-                    label="Password"
-                    type="password"
-                    variant="outlined"
-                    rounded
-                    required
-                  ></v-text-field>
-                </v-col>
-
-                <v-col cols="12" md="6">
-                  <v-text-field
-                    v-model="form.phone"
-                    label="Phone"
-                    variant="outlined"
-                    rounded
-                    required
-                  ></v-text-field>
-                </v-col>
-              </v-row>
-
-              <v-row>
-                <!-- Tercera fila -->
-                <v-col cols="12" md="6">
-                  <v-select
-                    v-model="form.rol"
-                    :items="roles"
-                    label="Rol"
-                    variant="outlined"
-                    @change="handleRoleChange"
-                    rounded
-                    required
-                  ></v-select>
-                </v-col>
-
-                <v-col cols="12" md="6">
-                  <v-btn
-                    color="primary"
-                    variant="elevated"
-                    rounded
-                    block
-                    class="same-size-btn"
-                    style="height: 50px;"
-                    @click="addUser"
+        <div class="min-h-screen bg-gray-100 p-8">
+          <div class="max-w-7xl mx-auto">
+            <div class="bg-white shadow-sm rounded-lg overflow-hidden">
+              <div class="p-6">
+                <div class="flex justify-between items-center mb-6">
+                  <div class="relative">
+                    <input
+                      v-model="searchTerm"
+                      @input="debouncedSearchUsers"
+                      type="text"
+                      placeholder="Search users..."
+                      class="pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm rounded-xl"
+                    />
+                    <div
+                      class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
+                    >
+                      <svg
+                        class="h-5 w-5 text-gray-400"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                        />
+                      </svg>
+                    </div>
+                  </div>
+                  <button
+                    @click="openCreateModal"
+                    class="flex px-4 py-2 bg-emerald-500 text-white rounded-xl text-medium hover:bg-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2"
                   >
-                    Save
-                  </v-btn>
-                </v-col>
-              </v-row>
-            </v-container>
-          </v-card>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      class="lucide lucide-user-round-plus ml-2 mr-2"
+                    >
+                      <path d="M2 21a8 8 0 0 1 13.292-6" />
+                      <circle cx="10" cy="8" r="5" />
+                      <path d="M19 16v6" />
+                      <path d="M22 19h-6" />
+                    </svg>
+
+                    Create User
+                  </button>
+                </div>
+                <table class="min-w-full divide-y divide-gray-200">
+                  <thead class="bg-gray-50">
+                    <tr>
+                      <th
+                        scope="col"
+                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      >
+                        Username
+                      </th>
+                      <th
+                        scope="col"
+                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      >
+                        Employee Name
+                      </th>
+                      <th
+                        scope="col"
+                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      >
+                        Rol
+                      </th>
+                      <th
+                        scope="col"
+                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      >
+                        Phone
+                      </th>
+                      <th
+                        scope="col"
+                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      >
+                        Edit
+                      </th>
+                      <th
+                        scope="col"
+                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      >
+                        Delete
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody class="bg-white divide-y divide-gray-200">
+                    <tr v-for="user in users" :key="user.id">
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-600"
+                      >
+                        {{ user.username }}
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                      >
+                        {{ user.employee_name }}
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                      >
+                        <span v-if="user.role === 'A'">Administrator</span>
+                        <span v-else-if="user.role === 'C'">Cashier</span>
+                        <span v-else>Waiter</span>
+                      </td>
+
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                      >
+                        {{ user.phone }}
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm font-medium"
+                      >
+                        <button
+                          @click="openEditModal(user)"
+                          class="text-blue-600 hover:text-blue-900"
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="24"
+                            height="24"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            class="lucide lucide-user-round-pen"
+                          >
+                            <path d="M2 21a8 8 0 0 1 10.821-7.487" />
+                            <path
+                              d="M21.378 16.626a1 1 0 0 0-3.004-3.004l-4.01 4.012a2 2 0 0 0-.506.854l-.837 2.87a.5.5 0 0 0 .62.62l2.87-.837a2 2 0 0 0 .854-.506z"
+                            />
+                            <circle cx="10" cy="8" r="5" />
+                          </svg>
+                        </button>
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm font-medium"
+                      >
+                        <button
+                          @click="openDeleteModal(user)"
+                          class="text-red-600 hover:text-red-900"
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="24"
+                            height="24"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          >
+                            <path d="M2 21a8 8 0 0 1 13.292-6"></path>
+                            <circle cx="10" cy="8" r="5"></circle>
+                            <path d="M22 19h-6"></path>
+                          </svg>
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <!-- Modal Create User -->
+                <CreateUserModal
+                  :isOpen="isCreateModalOpen"
+                  @close="closeCreateModal"
+                  @create-user="createUser"
+                />
+                <!-- Modal Edit User -->
+                <EditUserModal
+                  v-if="selectedUser && isEditModalOpen"
+                  :isOpen="isEditModalOpen"
+                  :userData="selectedUser"
+                  @close="closeEditModal"
+                  @submit-update="updateUser"
+                />
+                <!-- Modal Delete User -->
+                <DeleteUserModal
+                  :isOpen="isDeleteModalOpen"
+                  :user="selectedUser"
+                  @close="closeDeleteModal"
+                  @confirm-delete="deleteUser"
+                />
+              </div>
+            </div>
+          </div>
         </div>
       </main>
     </div>
   </div>
 </template>
+
 <script>
+import axios from "axios";
 import Sidebar from "@/components/SidebarComponent.vue";
 import Header from "@/components/HeaderComponent.vue";
+import { debounce } from "lodash";
+// Import modals
+import CreateUserModal from "@/components/CreateUserModal.vue";
+import EditUserModal from "@/components/EditUserModal.vue";
+import DeleteUserModal from "@/components/DeleteUserModal.vue";
 
 export default {
   name: "UsersView",
   components: {
     Sidebar,
     Header,
+    CreateUserModal,
+    EditUserModal,
+    DeleteUserModal,
   },
   data() {
     return {
-      form: {
-        username: "",
-        name_employee: "",
-        password: "",
-        phone: "",
-        rol: null,
-      },
-      roles: ["Administrator", "Cashier", "Waiter"],
       sidebarOpen: true,
+      isCreateModalOpen: false,
+      isEditModalOpen: false,
+      isDeleteModalOpen: false,
+      users: [],
+      errorMessage: "",
+      selectedUser: null,
+      searchTerm: "",
     };
   },
   methods: {
     toggleSidebar() {
       this.sidebarOpen = !this.sidebarOpen;
     },
-    addUser() {
-      console.log('Selected Role:', this.form.rol);
-      console.log("Usuario agregado:", this.form);
+    openCreateModal() {
+      this.isCreateModalOpen = true;
     },
-    parseRole(role) {
-      switch (role) {
-        case "Administrator":
-          return "A";
-        case "Cashier":
-          return "C";
-        case "Waiter":
-          return "M";
-        default:
-          return "Unknown";
+    closeCreateModal() {
+      this.errorMessage = "";
+      this.isCreateModalOpen = false;
+    },
+    openEditModal(user) {
+      console.log("Usuario seleccionado para editar:", user);
+      this.selectedUser = { ...user, id: user.id_user };
+      this.isEditModalOpen = true;
+    },
+    closeEditModal() {
+      this.selectedUser = null;
+      this.isEditModalOpen = false;
+    },
+    openDeleteModal(user) {
+      this.selectedUser = user;
+      this.isDeleteModalOpen = true;
+    },
+    closeDeleteModal() {
+      this.isDeleteModalOpen = false;
+      this.selectedUser = null;
+    },
+    async fetchUsers() {
+      try {
+        const response = await axios.get(
+          "http://127.0.0.1:8000/api/users/select"
+        );
+        this.users = response.data.users;
+        console.log("Users fetched:", this.users);
+      } catch (error) {
+        console.error(
+          "Error fetching users:",
+          error.response?.data || error.message
+        );
       }
     },
-    handleRoleChange(selectedRole) {
-      this.form.rol = this.parseRole(selectedRole);
-      console.log(this.form.rol);
+    async createUser(user) {
+      try {
+        if (user.role === "Administrator") {
+          user.role = "A";
+        } else if (user.role === "Cashier") {
+          user.role = "C";
+        } else if (user.role === "Waiter") {
+          user.role = "M";
+        }
+
+        const response = await axios.post(
+          "http://127.0.0.1:8000/api/users/create",
+          {
+            username: user.username,
+            password: user.password,
+            role: user.role,
+            employee_name: user.employee_name,
+            phone: user.phone,
+          }
+        );
+        console.log(response);
+        this.fetchUsers();
+        this.closeCreateModal();
+      } catch (error) {
+        console.error(
+          "Error creating user:",
+          (this.errorMessage =
+            error.response?.data?.message || "Error creating user."),
+          error.response?.data || error.message
+        );
+      }
     },
+    async updateUser(user) {
+      try {
+        const payload = {
+          id_user: user.id_user,
+          employee_name: user.employee_name,
+          phone: user.phone,
+          role:
+            user.role === "Administrator"
+              ? "A"
+              : user.role === "Cashier"
+              ? "C"
+              : "M",
+        };
+
+        if (user.password) {
+          payload.password = user.password;
+        }
+
+        const response = await axios.put(
+          "http://127.0.0.1:8000/api/users/update",
+          payload
+        );
+
+        console.log("User updated:", response.data);
+        this.fetchUsers();
+        this.closeEditModal();
+      } catch (error) {
+        console.error(
+          "Error updating user:",
+          error.response?.data || error.message
+        );
+      }
+    },
+    async deleteUser(user) {
+      try {
+        const response = await axios.delete(
+          "http://127.0.0.1:8000/api/users/delete",
+          {
+            data: { id_user: user.id_user },
+          }
+        );
+        console.log("User deleted:", response.data);
+        this.fetchUsers();
+      } catch (error) {
+        console.error(
+          "Error deleting user:",
+          error.response?.data || error.message
+        );
+      }
+    },
+    async searchUsers() {
+      try {
+        if (!this.searchTerm) {
+          this.fetchUsers();
+        } else {
+          const response = await axios.get(
+            "http://127.0.0.1:8000/api/users/search",
+            {
+              params: {
+                user: this.searchTerm,
+              },
+            }
+          );
+          this.users = response.data.users;
+          console.log("Users searched:", this.users);
+        }
+      } catch (error) {
+        console.error(
+          "Error searching users:",
+          error.response?.data || error.message
+        );
+      }
+    },
+
+    debouncedSearchUsers: debounce(function () {
+      this.searchUsers();
+    }, 300),
+  },
+  mounted() {
+    this.fetchUsers();
   },
 };
 </script>
