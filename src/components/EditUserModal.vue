@@ -186,6 +186,7 @@ export default {
           ...this.form,
         };
         this.$emit("submit-update", userData);
+        console.log("Este es el userData del formulario", userData);
         this.closeModal();
       }
     },
