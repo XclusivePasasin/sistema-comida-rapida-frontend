@@ -128,8 +128,9 @@
                                 <CreateCostumersModal :isOpen="isCreateModalOpen" ref="CreateCostumersModal"
                                     @close="closeCreateModal" @create-customer="createUser" />
                                 <!-- Modal Edit User -->
-                                <EditUserModal v-if="selectedUser && isEditModalOpen" :isOpen="isEditModalOpen"
-                                    :userData="selectedUser" @close="closeEditModal" @submit-update="updateUser" />
+                                <EditCostumerModal v-if="selectedCostumer && isEditModalOpen" :isOpen="isEditModalOpen"
+                                    :customer="selectedCostumer" @close="closeEditModal"
+                                    @submit-update="updateCustomer" />
                                 <!-- Modal Delete User -->
                                 <DeleteCostumerModal :isOpen="isDeleteModalOpen" :customer="selectedCostumer"
                                     @close="closeDeleteModal" @confirm-delete="deleteCostumer" />
@@ -149,7 +150,7 @@ import Header from "@/components/HeaderComponent.vue";
 import { debounce } from "lodash";
 // Import modals
 import CreateCostumersModal from "@/components/CreateCostumerModal.vue";
-import EditUserModal from "@/components/EditUserModal.vue";
+import EditCostumerModal from "@/components/EditCustomerModal.vue";
 import DeleteCostumerModal from "@/components/DeleteCostumerModal.vue";
 
 export default {
@@ -158,7 +159,7 @@ export default {
         Sidebar,
         Header,
         CreateCostumersModal,
-        EditUserModal,
+        EditCostumerModal,
         DeleteCostumerModal,
     },
     data() {
@@ -186,13 +187,13 @@ export default {
             this.errorMessage = "";
             this.isCreateModalOpen = false;
         },
-        openEditModal(user) {
-            console.log("Usuario seleccionado para editar:", user);
-            this.selectedUser = { ...user, id: user.id_user };
+        openEditModal(customer) {
+            console.log("Usuario seleccionado para editar:", customer);
+            this.selectedCostumer = { ...customer, dui: customer.dui };
             this.isEditModalOpen = true;
         },
         closeEditModal() {
-            this.selectedUser = null;
+            this.selectedCostumer = null;
             this.isEditModalOpen = false;
         },
         openDeleteModal(customer) {
@@ -242,39 +243,25 @@ export default {
                 );
             }
         },
-        async updateUser(user) {
+        async updateCustomer(customer) {
             try {
                 const payload = {
-                    id_user: user.id_user,
-                    employee_name: user.employee_name,
-                    phone: user.phone,
-                    role:
-                        user.role === "Administrator"
-                            ? "A"
-                            : user.role === "Cashier"
-                                ? "C"
-                                : "M",
+                    dui: customer.dui,
+                    first_name: customer.first_name,
+                    last_name: customer.last_name,
+                    address: customer.address,
+                    phone: customer.phone,
                 };
 
-                if (user.password) {
-                    payload.password = user.password;
-                }
-
-                const response = await axios.put(
-                    "http://127.0.0.1:8000/api/customers/update",
-                    payload
-                );
-
-                console.log("User updated:", response.data);
+                await axios.put("http://127.0.0.1:8000/api/customers/update", payload);
                 this.fetchCostumers();
                 this.closeEditModal();
             } catch (error) {
-                console.error(
-                    "Error updating user:",
-                    error.response?.data || error.message
-                );
+                console.error("Error updating customer:", error.response?.data || error.message);
             }
-        },
+        }
+        ,
+
         async deleteCostumer(customer) {
             try {
                 const response = await axios.delete(

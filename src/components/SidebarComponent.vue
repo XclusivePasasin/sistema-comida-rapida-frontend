@@ -26,7 +26,19 @@
         to="/customers"
         class="block py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700 hover:text-white"
       >
-        Custumers
+        Customers
+      </router-link>
+      <router-link
+        to="/categories"
+        class="block py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700 hover:text-white"
+      >
+        Categories
+      </router-link>
+      <router-link
+        to="/tables"
+        class="block py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700 hover:text-white"
+      >
+        Tables
       </router-link>
     </nav>
   </div>
