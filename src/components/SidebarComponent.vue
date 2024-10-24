@@ -17,10 +17,10 @@
         My orders
       </router-link>
       <router-link
-        to="/account"
+        to="/dishes"
         class="block py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700 hover:text-white"
       >
-        My account
+        Dishes
       </router-link>
       <router-link
         to="/customers"
