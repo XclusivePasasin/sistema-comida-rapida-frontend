@@ -9,7 +9,7 @@
                     <label for="dui" class="block text-sm font-medium text-gray-600">
                         Dui
                     </label>
-                    <input v-model="form.dui" type="text" id="dui" maxlength="10"
+                    <input v-model="form.dui" type="text" id="dui" maxlength="9"
                         class="mt-1 block w-full px-3 py-2 rounded-xl border border-gray-300 shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
                     <p v-if="errors.dui" class="text-red-500 text-sm mt-1">
                         {{ errors.dui }}
@@ -152,8 +152,8 @@ export default {
                 this.errors.dui = "DUI cannot be empty.";
                 return;
             }
-            if (this.form.dui.length !== 10) {
-                this.errors.dui = "DUI must be exactly 10 characters.";
+            if (this.form.dui.length !== 9) {
+                this.errors.dui = "DUI must be exactly 9 characters.";
                 return;
             }
 

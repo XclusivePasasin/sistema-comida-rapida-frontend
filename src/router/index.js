@@ -4,6 +4,8 @@ import DashboardView from "@/views/DashboardView.vue";
 import UsersView from "@/views/UsersView.vue";
 import CustomersView from "@/views/CustomersView.vue";
 import DishesView from "@/views/DishesView.vue";
+import CategoriesView from "@/views/CategoriesView.vue";
+import TablesView from "@/views/TablesView.vue";
 
 const routes = [
   {
@@ -30,6 +32,16 @@ const routes = [
     path: "/dishes",
     name: "Dishes",
     component: DishesView,
+  },
+  {
+    path: "/categories",
+    name: "Categories",
+    component: CategoriesView,
+  },
+  {
+    path: "/tables",
+    name: "Tables",
+    component: TablesView,
   },
 ];
 

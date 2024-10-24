@@ -1,39 +1,52 @@
 <template>
     <div v-if="isOpen" class="fixed inset-0 bg-gray-600 bg-opacity-75 flex justify-center items-center">
         <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
-            <h2 class="text-xl font-bold mb-4">Update User</h2>
+            <h2 class="text-xl font-bold mb-4">Update Customer</h2>
 
             <form @submit.prevent="submitForm">
-                <!-- Username (no edit) -->
+                <!-- Dui -->
                 <div class="mb-4">
-                    <label for="username" class="block text-sm font-medium text-gray-600">
-                        Username
+                    <label for="dui" class="block text-sm font-medium text-gray-600">
+                        Dui
                     </label>
-                    <input v-model="form.username" type="text" id="username" maxlength="15" disabled readonly
+                    <input v-model="form.dui" type="text" id="dui" maxlength="10" readonly
                         class="mt-1 block w-full px-3 py-2 rounded-xl border border-gray-300 shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
-                </div>
-
-                <!-- Employee Name -->
-                <div class="mb-4">
-                    <label for="employee_name" class="block text-sm font-medium text-gray-600">
-                        Employee Name
-                    </label>
-                    <input v-model="form.employee_name" type="text" id="employee_name" maxlength="70"
-                        class="mt-1 block w-full px-3 py-2 rounded-xl border border-gray-300 shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
-                    <p v-if="errors.employee_name" class="text-red-500 text-sm mt-1">
-                        {{ errors.employee_name }}
+                    <p v-if="errors.dui" class="text-red-500 text-sm mt-1">
+                        {{ errors.dui }}
                     </p>
                 </div>
 
-                <!-- Password (opcional) -->
+                <!-- First Name -->
                 <div class="mb-4">
-                    <label for="password" class="block text-sm font-medium text-gray-600">
-                        Password (optional)
-                    </label>
-                    <input v-model="form.password" type="password" id="password" maxlength="20"
+                    <label for="first_name" class="block text-sm font-medium text-gray-600">First Name</label>
+                    <input v-model="form.first_name" type="text" id="first_name" maxlength="70"
                         class="mt-1 block w-full px-3 py-2 rounded-xl border border-gray-300 shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
-                    <p v-if="errors.password" class="text-red-500 text-sm mt-1">
-                        {{ errors.password }}
+                    <p v-if="errors.first_name" class="text-red-500 text-sm mt-1">
+                        {{ errors.first_name }}
+                    </p>
+                </div>
+
+                <!-- Last Name -->
+                <div class="mb-4">
+                    <label for="last_name" class="block text-sm font-medium text-gray-600">
+                        Last Name
+                    </label>
+                    <input v-model="form.last_name" type="text" id="last_name" maxlength="70"
+                        class="mt-1 block w-full px-3 py-2 rounded-xl border border-gray-300 shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
+                    <p v-if="errors.last_name" class="text-red-500 text-sm mt-1">
+                        {{ errors.last_name }}
+                    </p>
+                </div>
+
+                <!-- Address -->
+                <div class="mb-4">
+                    <label for="address" class="block text-sm font-medium text-gray-600">
+                        Address
+                    </label>
+                    <input v-model="form.address" type="text" id="address" maxlength="255"
+                        class="mt-1 block w-full px-3 py-2 rounded-xl border border-gray-300 shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
+                    <p v-if="errors.address" class="text-red-500 text-sm mt-1">
+                        {{ errors.address }}
                     </p>
                 </div>
 
@@ -49,23 +62,6 @@
                     </p>
                 </div>
 
-                <!-- Role -->
-                <div class="mb-4">
-                    <label for="role" class="block text-sm font-medium text-gray-600">
-                        Role
-                    </label>
-                    <select v-model="form.role" id="role"
-                        class="mt-1 block w-full text-gray-600 px-3 py-2 rounded-xl border border-gray-300 shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
-                        <option disabled value="">Select a Role</option>
-                        <option v-for="(label, value) in roleOptions" :key="value" :value="value">
-                            {{ label }}
-                        </option>
-                    </select>
-                    <p v-if="errors.role" class="text-red-500 text-sm mt-1">
-                        {{ errors.role }}
-                    </p>
-                </div>
-
                 <!-- Buttons -->
                 <div class="flex justify-end">
                     <button type="button" class="bg-gray-300 hover:bg-gray-400 text-gray-800 py-2 px-4 rounded-xl mr-2"
@@ -73,7 +69,7 @@
                         Cancel
                     </button>
                     <button type="submit" class="bg-sky-600 hover:bg-sky-700 text-white py-2 px-4 rounded-xl">
-                        Update User
+                        Update Customer
                     </button>
                 </div>
             </form>
@@ -88,7 +84,7 @@ export default {
             type: Boolean,
             required: true,
         },
-        userData: {
+        customer: {
             type: Object,
             required: true,
         },
@@ -96,74 +92,114 @@ export default {
     data() {
         return {
             form: {
-                username: this.userData.username || "",
-                employee_name: this.userData.employee_name || "",
-                password: "",
-                phone: this.userData.phone || "",
-                role: this.userData.role || "",
-            },
-            roleOptions: {
-                A: "Administrator",
-                C: "Cashier",
-                M: "Waiter",
+                dui: "",
+                first_name: "",
+                last_name: "",
+                address: "",
+                phone: "",
             },
             errors: {
-                employee_name: "",
-                password: "",
+                dui: "",
+                first_name: "",
+                last_name: "",
+                address: "",
                 phone: "",
-                role: "",
             },
         };
     },
+    watch: {
+        // Este watcher se activará cuando el prop `customer` cambie o se defina.
+        isOpen(val) {
+            if (val) {
+                // Cuando el modal se abra, llenamos el formulario con los datos del cliente.
+                this.loadCustomerData();
+            }
+        },
+        customer: {
+            immediate: true, // Ejecutar inmediatamente cuando el componente se monta.
+            deep: true, // Detectar cambios profundos en el objeto customer.
+            handler(newCustomer) {
+                if (newCustomer) {
+                    this.loadCustomerData();
+                }
+            },
+        },
+    },
     methods: {
+        loadCustomerData() {
+            // Aquí garantizamos que los datos del cliente se asignan al formulario.
+            this.form = {
+                dui: this.customer.dui || "",
+                first_name: this.customer.first_name || "",
+                last_name: this.customer.last_name || "",
+                address: this.customer.address || "",
+                phone: this.customer.phone || "",
+            };
+        },
         closeModal() {
             this.$emit("close");
             this.clearErrors();
         },
         clearErrors() {
             this.errors = {
-                employee_name: "",
-                password: "",
+                dui: "",
+                first_name: "",
+                last_name: "",
+                address: "",
                 phone: "",
-                role: "",
             };
         },
         submitForm() {
-            this.validateEmployeeName();
-            this.validatePassword();
+            this.validateDui();
+            this.validateFirstName();
+            this.validateLastName();
+            this.validateAddress();
             this.validatePhone();
-            this.validateRole();
 
             if (
-                !this.errors.employee_name &&
-                !this.errors.password &&
-                !this.errors.phone &&
-                !this.errors.role
+                !this.errors.dui &&
+                !this.errors.first_name &&
+                !this.errors.last_name &&
+                !this.errors.address &&
+                !this.errors.phone
             ) {
-                const userData = {
-                    id_user: this.userData.id,
+                const customer = {
                     ...this.form,
                 };
-                this.$emit("submit-update", userData);
+                this.$emit("submit-update", customer);
                 this.closeModal();
             }
         },
-        validateEmployeeName() {
-            const nameRegex = /^[a-zA-Z\s]+$/;
-            if (!this.form.employee_name || this.form.employee_name.trim() === "") {
-                this.errors.employee_name = "Employee Name cannot be empty.";
-            } else if (!nameRegex.test(this.form.employee_name)) {
-                this.errors.employee_name =
-                    "Employee Name should not contain numbers or symbols.";
+        validateDui() {
+            const duiRegex = /^[0-9]{9}$/; // Cambiado a 9 dígitos sin guion
+            if (!this.form.dui || this.form.dui.trim() === "") {
+                this.errors.dui = "DUI cannot be empty.";
+            } else if (!duiRegex.test(this.form.dui)) {
+                this.errors.dui = "DUI must contain exactly 9 digits.";
             } else {
-                this.errors.employee_name = "";
+                this.errors.dui = "";
             }
         },
-        validatePassword() {
-            if (this.form.password && this.form.password.length < 6) {
-                this.errors.password = "Password must be at least 6 characters long.";
+
+        validateFirstName() {
+            if (!this.form.first_name || this.form.first_name.trim() === "") {
+                this.errors.first_name = "First Name cannot be empty.";
             } else {
-                this.errors.password = "";
+                this.errors.first_name = "";
+            }
+        },
+        validateLastName() {
+            if (!this.form.last_name || this.form.last_name.trim() === "") {
+                this.errors.last_name = "Last Name cannot be empty.";
+            } else {
+                this.errors.last_name = "";
+            }
+        },
+        validateAddress() {
+            if (!this.form.address || this.form.address.trim() === "") {
+                this.errors.address = "Address cannot be empty.";
+            } else {
+                this.errors.address = "";
             }
         },
         validatePhone() {
@@ -174,13 +210,6 @@ export default {
                 this.errors.phone = "Phone number must contain exactly 8 digits.";
             } else {
                 this.errors.phone = "";
-            }
-        },
-        validateRole() {
-            if (!this.form.role) {
-                this.errors.role = "Please select a role.";
-            } else {
-                this.errors.role = "";
             }
         },
     },
