@@ -8,15 +8,25 @@
       </button>
     </div>
 
-    <div class="flex items-center space-x-4 pr-4">
-      <!-- Avatar -->
-      <img class="w-10 h-10 rounded-full" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSWDSOJsC-AJ21ww3nOVDD910tTvAoa9dEP8w&s" alt="User Avatar" />
+    <div class="relative">
+      <!-- Avatar Area -->
+      <div @click="toggleLogoutMenu" class="flex items-center space-x-4 pr-4 cursor-pointer">
+        <!-- Avatar -->
+        <img class="w-10 h-10 rounded-full" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSWDSOJsC-AJ21ww3nOVDD910tTvAoa9dEP8w&s" alt="User Avatar" />
 
-      <div>
-        <div class="text-gray-900 font-semibold">{{ user.username || 'Unknown' }}</div>
-        <div class="text-gray-500 text-sm">
-          {{ user_role }}
+        <div>
+          <div class="text-gray-900 font-semibold">{{ user.username || 'Unknown' }}</div>
+          <div class="text-gray-500 text-sm">
+            {{ user_role }}
+          </div>
         </div>
+      </div>
+
+      <!-- Logout Menu -->
+      <div v-if="showLogoutMenu" class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-20">
+        <a @click="logout" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer">
+          Cerrar Sesión
+        </a>
       </div>
     </div>
   </header>
@@ -31,7 +41,8 @@ export default {
         username: '',
         role: '',
         employee_name: '',
-      }
+      },
+      showLogoutMenu: false, 
     };
   },
   computed: {
@@ -54,9 +65,18 @@ export default {
       this.user = store_user;
     }
   },
+  methods: {
+    toggleLogoutMenu() {
+      this.showLogoutMenu = !this.showLogoutMenu; 
+    },
+    logout() {
+      localStorage.removeItem('user');
+      this.$router.push('/'); 
+    }
+  }
 }
 </script>
 
 <style scoped>
-/* Puedes agregar estilos específicos aquí si lo necesitas */
+
 </style>

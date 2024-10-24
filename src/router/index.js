@@ -3,6 +3,7 @@ import LoginView from "@/views/LoginView.vue";
 import DashboardView from "@/views/DashboardView.vue";
 import UsersView from "@/views/UsersView.vue";
 import CustomersView from "@/views/CustomersView.vue";
+import DishesView from "@/views/DishesView.vue";
 import CategoriesView from "@/views/CategoriesView.vue";
 import TablesView from "@/views/TablesView.vue";
 
@@ -26,6 +27,11 @@ const routes = [
     path: "/customers",
     name: "Customers",
     component: CustomersView,
+  },
+  {
+    path: "/dishes",
+    name: "Dishes",
+    component: DishesView,
   },
   {
     path: "/categories",
