@@ -64,7 +64,7 @@
               :key="category.id"
               :value="category.id"
             >
-              {{ category.name }}
+              {{category.name }}
             </option>
           </select>
           <p v-if="errors.id_category" class="text-red-500 text-sm mt-1">
@@ -152,24 +152,28 @@ export default {
       };
     },
 
-    async fetchCategories() {
-      try {
-        const response = await axios.get(
-          "http://127.0.0.1:8000/api/categories"
-        );
-        this.categories = response.data.categories.map((category) => ({
-          id: category.id_category,
-          name: category.name,
-        }));
+    async fetchCategories(page = 1) {
+  try {
+    const response = await axios.get("http://127.0.0.1:8000/api/categories", {
+      params: {
+        page: page,
+      },
+    });
 
-        console.log("Categories loaded as a list:", this.categories);
-      } catch (error) {
-        console.error(
-          "Error fetching categories:",
-          error.response?.data || error.message
-        );
-      }
-    },
+    this.categories = response.data.categories.data.map((category) => ({
+      id: category.id_category,
+      name: category.name,
+    }));
+
+    this.currentPage = response.data.categories.current_page;
+    this.totalPages = response.data.categories.last_page;
+
+    console.log("Categories fetched:", this.categories);
+  } catch (error) {
+    console.error("Error fetching categories:", error.response?.data || error.message);
+  }
+}
+,
 
     async validateDishName() {
       if (!this.form.dish_name || this.form.dish_name.trim() === "") {
