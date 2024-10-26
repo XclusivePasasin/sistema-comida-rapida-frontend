@@ -17,7 +17,7 @@
                                 <!-- Fixed Search and Button Section -->
                                 <div class="flex justify-between items-center mb-6 sticky top-0 bg-white">
                                     <div class="relative">
-                                        <input v-model="searchTerm" @input="debouncedSearchUsers" type="text"
+                                        <input v-model="searchTerm" @input="debouncedSearchTables" type="text"
                                             placeholder="Search Tables..."
                                             class="pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm rounded-xl"
                                             style="width: 100%" />
@@ -249,29 +249,29 @@ export default {
                 );
             }
         },
-            async updateTables(tables) {
-                try {
-                    const payload = {
-                        id_table: tables.id_table, 
-                        table_number: tables.table_number,
-                    };
+        async updateTables(tables) {
+            try {
+                const payload = {
+                    id_table: tables.id_table,
+                    table_number: tables.table_number,
+                };
 
 
-                    const response = await axios.put(
-                        "http://127.0.0.1:8000/api/tables/update",
-                        payload
-                    );
+                const response = await axios.put(
+                    "http://127.0.0.1:8000/api/tables/update",
+                    payload
+                );
 
-                    console.log("tables updated:", response.data);
-                    this.fetchTables();
-                    this.closeEditModal();
-                } catch (error) {
-                    console.error(
-                        "Error updating tables:",
-                        error.response?.data || error.message
-                    );
-                }
-            },
+                console.log("tables updated:", response.data);
+                this.fetchTables();
+                this.closeEditModal();
+            } catch (error) {
+                console.error(
+                    "Error updating tables:",
+                    error.response?.data || error.message
+                );
+            }
+        },
         async deleteCategory(tables) {
             try {
                 const response = await axios.delete(
@@ -289,32 +289,35 @@ export default {
                 );
             }
         },
-        async searchUsers() {
+        async searchTables() {
             try {
                 if (!this.searchTerm) {
+                    // Si no hay término de búsqueda, traer todas las tablas
                     this.fetchTables();
                 } else {
+                    // Si hay término de búsqueda, realiza la solicitud al endpoint de búsqueda
                     const response = await axios.get(
-                        "http://127.0.0.1:8000/api/users/search",
+                        "http://127.0.0.1:8000/api/tables/search",
                         {
                             params: {
-                                user: this.searchTerm,
+                                table: this.searchTerm, // El parámetro de búsqueda
                             },
                         }
                     );
-                    this.users = response.data.users;
-                    console.log("Users searched:", this.users);
+                    this.tables = response.data.tables; // Asigna los resultados al array de tablas
+                    console.log("Tables searched:", this.tables);
                 }
             } catch (error) {
+                // Manejo de errores en caso de que falle la solicitud
                 console.error(
-                    "Error searching users:",
+                    "Error searching tables:",
                     error.response?.data || error.message
                 );
             }
         },
 
-        debouncedSearchUsers: debounce(function () {
-            this.searchUsers();
+        debouncedSearchTables: debounce(function () {
+            this.searchTables();
         }, 300),
 
         // Method for change page

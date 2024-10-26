@@ -17,7 +17,7 @@
                                 <!-- Fixed Search and Button Section -->
                                 <div class="flex justify-between items-center mb-6 sticky top-0 bg-white">
                                     <div class="relative">
-                                        <input v-model="searchTerm" @input="debouncedSearchUsers" type="text"
+                                        <input v-model="searchTerm" @input="debouncedSearchCategorias" type="text"
                                             placeholder="Search categories..."
                                             class="pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm rounded-xl"
                                             style="width: 100%" />
@@ -130,8 +130,9 @@
                                 <CreateCategoriesModal :isOpen="isCreateModalOpen" ref="CreateCategoriesModal"
                                     @close="closeCreateModal" @create-category="createCategory" />
                                 <!-- Modal Edit User -->
-                                <EditCategoriesModal v-if="selectedCategory && isEditModalOpen" :isOpen="isEditModalOpen"
-                                    :categories="selectedCategory" @close="closeEditModal" @submit-update="updateCategories" />
+                                <EditCategoriesModal v-if="selectedCategory && isEditModalOpen"
+                                    :isOpen="isEditModalOpen" :categories="selectedCategory" @close="closeEditModal"
+                                    @submit-update="updateCategories" />
                                 <!-- Modal Delete User -->
                                 <DeleteCategoriesModal :isOpen="isDeleteModalOpen" :categories="selectedCategory"
                                     @close="closeDeleteModal" @confirm-delete="deleteCategory" />
@@ -252,7 +253,7 @@ export default {
         async updateCategories(categories) {
             try {
                 const payload = {
-                    id_category: categories.id_category, 
+                    id_category: categories.id_category,
                     name: categories.name,
                 };
 
@@ -289,32 +290,35 @@ export default {
                 );
             }
         },
-        async searchUsers() {
+        async searchCategories() {
             try {
                 if (!this.searchTerm) {
+                    // Si no hay término de búsqueda, traer todas las categorías
                     this.fetchCategories();
                 } else {
+                    // Si hay término de búsqueda, realiza la solicitud al endpoint de búsqueda
                     const response = await axios.get(
-                        "http://127.0.0.1:8000/api/users/search",
+                        "http://127.0.0.1:8000/api/categories/search",
                         {
                             params: {
-                                user: this.searchTerm,
+                                category: this.searchTerm, // El parámetro de búsqueda
                             },
                         }
                     );
-                    this.users = response.data.users;
-                    console.log("Users searched:", this.users);
+                    this.categories = response.data.categories; // Asigna los resultados al array de categorías
+                    console.log("Categories searched:", this.categories);
                 }
             } catch (error) {
+                // Manejo de errores en caso de que falle la solicitud
                 console.error(
-                    "Error searching users:",
+                    "Error searching categories:",
                     error.response?.data || error.message
                 );
             }
         },
 
-        debouncedSearchUsers: debounce(function () {
-            this.searchUsers();
+        debouncedSearchCategorias: debounce(function () {
+            this.searchCategories();
         }, 300),
 
         // Method for change page

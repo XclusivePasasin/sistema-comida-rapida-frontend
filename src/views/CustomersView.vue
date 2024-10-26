@@ -16,7 +16,7 @@
                             <div class="p-6">
                                 <div class="flex justify-between items-center mb-6">
                                     <div class="relative">
-                                        <input v-model="searchTerm" @input="debouncedSearchUsers" type="text"
+                                        <input v-model="searchTerm" @input="debouncedSearchCustomers" type="text"
                                             placeholder="Search costumers..."
                                             class="pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm rounded-xl"
                                             style="width: 100%;" />
@@ -124,6 +124,20 @@
                                         </tr>
                                     </tbody>
                                 </table>
+                                <div class="flex justify-between items-center mt-4">
+                                    <button @click="goToPage(currentPage - 1)" :disabled="currentPage === 1"
+                                        class="px-4 py-2 bg-gray-200 rounded-lg text-sm">
+                                        Previous
+                                    </button>
+
+                                    <span>Page {{ currentPage }} of {{ totalPages }}</span>
+
+                                    <button @click="goToPage(currentPage + 1)" :disabled="currentPage === totalPages"
+                                        class="px-4 py-2 bg-gray-200 rounded-lg text-sm">
+                                        Next
+                                    </button>
+                                </div>
+
                                 <!-- Modal Create User -->
                                 <CreateCostumersModal :isOpen="isCreateModalOpen" ref="CreateCostumersModal"
                                     @close="closeCreateModal" @create-customer="createUser" />
@@ -204,20 +218,28 @@ export default {
             this.isDeleteModalOpen = false;
             this.selectedCostumer = null;
         },
-        async fetchCostumers() {
+        async fetchCostumers(page = 1) {
             try {
                 const response = await axios.get(
-                    "http://127.0.0.1:8000/api/customers"
+                    "http://127.0.0.1:8000/api/customers",
+                    {
+                        params: {
+                            page: page,
+                        },
+                    }
                 );
-                this.customers = response.data.customers;
-                console.log("customers fetched:", this.customers);
+                this.customers = response.data.customers.data;
+                this.currentPage = response.data.customers.current_page;
+                this.totalPages = response.data.customers.last_page;
+                console.log("Customers fetched:", this.customers);
             } catch (error) {
                 console.error(
-                    "Error fetching users:",
+                    "Error fetching customers:",
                     error.response?.data || error.message
                 );
             }
         },
+
         async createUser(customers) {
             try {
 
@@ -279,7 +301,7 @@ export default {
                 );
             }
         },
-        async searchCutomers() {
+        async searchCustomers() {
             try {
                 if (!this.searchTerm) {
                     this.fetchCostumers();
@@ -303,9 +325,12 @@ export default {
             }
         },
 
-        debouncedSearchUsers: debounce(function () {
-            this.searchUsers();
+        debouncedSearchCustomers: debounce(function () {
+            this.searchCustomers();
         }, 300),
+    },
+    goToPage(page) {
+        this.fetchCostumers(page);
     },
     mounted() {
         this.fetchCostumers();

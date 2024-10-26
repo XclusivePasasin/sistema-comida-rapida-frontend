@@ -9,13 +9,8 @@
           <label for="dish_name" class="block text-sm font-medium text-gray-600">
             Dish Name
           </label>
-          <input
-            v-model="form.dish_name"
-            type="text"
-            id="dish_name"
-            maxlength="50"
-            class="mt-1 block w-full px-3 py-2 rounded-xl border border-gray-300 shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-          />
+          <input v-model="form.dish_name" type="text" id="dish_name" maxlength="50"
+            class="mt-1 block w-full px-3 py-2 rounded-xl border border-gray-300 shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
           <p v-if="errors.dish_name" class="text-red-500 text-sm mt-1">
             {{ errors.dish_name }}
           </p>
@@ -26,14 +21,8 @@
           <label for="price" class="block text-sm font-medium text-gray-600">
             Price
           </label>
-          <input
-            v-model="form.price"
-            type="number"
-            min="0"
-            step="0.01"
-            id="price"
-            class="mt-1 block w-full px-3 py-2 rounded-xl border border-gray-300 shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-          />
+          <input v-model="form.price" type="number" min="0" step="0.01" id="price"
+            class="mt-1 block w-full px-3 py-2 rounded-xl border border-gray-300 shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
           <p v-if="errors.price" class="text-red-500 text-sm mt-1">
             {{ errors.price }}
           </p>
@@ -44,11 +33,8 @@
           <label for="id_category" class="block text-sm font-medium text-gray-600">
             Category
           </label>
-          <select
-            v-model="form.id_category"
-            id="id_category"
-            class="mt-1 block w-full text-gray-600 px-3 py-2 rounded-xl border border-gray-300 shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-          >
+          <select v-model="form.selectedCategory" id="id_category"
+            class="mt-1 block w-full text-gray-600 px-3 py-2 rounded-xl border border-gray-300 shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
             <option disabled value="">Select a Category</option>
             <option v-for="category in categories" :key="category.id_category" :value="category.id_category">
               {{ category.name }}
@@ -64,27 +50,17 @@
           <label for="description" class="block text-sm font-medium text-gray-600">
             Description (optional)
           </label>
-          <textarea
-            v-model="form.description"
-            id="description"
-            maxlength="255"
-            class="mt-1 block w-full px-3 py-2 rounded-xl border border-gray-300 shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-          />
+          <textarea v-model="form.description" id="description" maxlength="255"
+            class="mt-1 block w-full px-3 py-2 rounded-xl border border-gray-300 shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
         </div>
 
         <!-- Buttons -->
         <div class="flex justify-end">
-          <button
-            type="button"
-            class="bg-gray-300 hover:bg-gray-400 text-gray-800 py-2 px-4 rounded-xl mr-2"
-            @click="closeModal"
-          >
+          <button type="button" class="bg-gray-300 hover:bg-gray-400 text-gray-800 py-2 px-4 rounded-xl mr-2"
+            @click="closeModal">
             Cancel
           </button>
-          <button
-            type="submit"
-            class="bg-sky-600 hover:bg-sky-700 text-white py-2 px-4 rounded-xl"
-          >
+          <button type="submit" class="bg-sky-600 hover:bg-sky-700 text-white py-2 px-4 rounded-xl">
             Update Dish
           </button>
         </div>
@@ -139,23 +115,38 @@ export default {
         id_category: "",
       };
     },
-    // Fetch categories from API
-    async fetchCategories() {
-      try {
-        const response = await axios.get(
-          "http://127.0.0.1:8000/api/categories"
+    computed: {
+      selectedCategoryName() {
+        const selectedCategory = this.categories.find(
+          (category) => category.id_category === this.form.id_category
         );
-        this.categories = response.data.categories.map((category) => ({
-          id_category: category.id_category,
+        return selectedCategory ? selectedCategory.name : null;
+      },
+    },
+
+    // Fetch categories from API
+    async fetchCategories(page = 1) {
+      try {
+        const response = await axios.get("http://127.0.0.1:8000/api/categories", {
+          params: {
+            page: page,
+          },
+        });
+
+        this.categories = response.data.categories.data.map((category) => ({
+          id: category.id_category,
           name: category.name,
         }));
+
+        this.currentPage = response.data.categories.current_page;
+        this.totalPages = response.data.categories.last_page;
+
+        console.log("Categories fetched:", this.categories);
       } catch (error) {
-        console.error(
-          "Error fetching categories:",
-          error.response?.data || error.message
-        );
+        console.error("Error fetching categories:", error.response?.data || error.message);
       }
-    },
+    }
+    ,
     async validateDishName() {
       if (this.form.dish_name === this.dishData.dish_name) {
         this.errors.dish_name = "";
@@ -226,6 +217,7 @@ export default {
         const updatedDishData = {
           id_dish: this.dishData.id_dish,
           ...this.form,
+          category_name: this.selectedCategoryName,
         };
         this.$emit("submit-update", updatedDishData);
         this.closeModal();
