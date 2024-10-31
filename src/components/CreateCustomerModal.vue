@@ -189,7 +189,6 @@ export default {
       };
     },
     async validateDui() {
-      // Expresión regular para permitir solo dígitos
       const duiPattern = /^\d{9}$/;
 
       if (!this.form.dui || this.form.dui.trim() === "") {
@@ -198,7 +197,6 @@ export default {
       }
 
       if (!duiPattern.test(this.form.dui)) {
-        // Verifica si el DUI contiene solo números y tiene exactamente 9 caracteres
         this.errors.dui = "DUI must contain exactly 9 digits.";
         return;
       }
@@ -208,14 +206,11 @@ export default {
         return;
       }
 
-      // Verificar disponibilidad del DUI en el backend
       try {
-        const response = await axios.get(
-          `http://127.0.0.1:8000/api/customers/search`,
+        const response = await axios.post(
+          `http://127.0.0.1:8000/api/customers/search-dui`,
           {
-            params: {
-              customers: this.form.dui,
-            },
+              dui: this.form.dui,
           }
         );
 
