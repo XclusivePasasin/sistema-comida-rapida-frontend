@@ -654,10 +654,11 @@ export default {
 
     async updateTableStatus(id, status) {
       try {
-        await axios.post("http://127.0.0.1:8000/api/tables/update-status", {
+        await axios.put("http://127.0.0.1:8000/api/tables/update-status", {
           id_table: id,
           status: status,
         });
+        console.log("Table status updated successfully.", id);
       } catch (error) {
         console.error(
           "Error updating table status:",
@@ -696,6 +697,7 @@ export default {
         }
 
         await this.updateTableStatus(this.order.id_table, "I");
+        console.log("Table status updated successfully.", this.order.id_table);
 
         this.showAlert("Order created successfully.", "success");
 
@@ -721,9 +723,16 @@ export default {
         payment_method: "cash",
         duiLocked: false,
       };
+
+      this.categories = [];
+      this.tables = [];
       this.orderDetails = [];
       this.selectedDish = null;
+      this.selectedCategory = null;
       this.amount = 1;
+      this.fetchCategories();
+      this.fetchAvailableTables();
+      this.fetchNextOrderId();
     },
   },
   watch: {
