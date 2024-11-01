@@ -27,10 +27,28 @@
                   Create Order
                 </h2>
                 <button
-                  @click="showModal = true"
-                  class="px-4 py-2 bg-sky-600 text-white rounded-xl hover:bg-sky-700 focus:outline-none"
+                  @click="createOrder"
+                  class="flex items-center justify-center w-40 py-2 bg-emerald-500 text-white rounded-xl hover:bg-emerald-600 focus:outline-none"
                 >
-                  Register Customer
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="lucide lucide-grid-2x2-plus mr-2"
+                  >
+                    <path
+                      d="M12 3v17a1 1 0 0 1-1 1H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v6a1 1 0 0 1-1 1H3"
+                    />
+                    <path d="M16 19h6" />
+                    <path d="M19 22v-6" />
+                  </svg>
+                  Create Order
                 </button>
               </div>
 
@@ -73,21 +91,59 @@
                     </div>
                     <!-- Customer  -->
                     <div>
-                      <label for="customerDui">Customer:</label>
-                      <input
-                        type="text"
-                        v-model="order.customer_dui"
-                        @input="filterDUI"
-                        :readonly="duiLocked"
-                        @blur="validateCustomerDUI"
-                        class="pl-5 pr-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm rounded-xl"
-                        placeholder="Enter customer DUI"
-                      />
+                      <label
+                        for="customerDui"
+                        class="block text-sm font-medium text-gray-700"
+                        >Customer:</label
+                      >
+                      <div class="flex space-x-2 mt-1">
+                        <!-- Input para el DUI del cliente -->
+                        <input
+                          type="text"
+                          v-model="order.customer_dui"
+                          @input="filterDUI"
+                          :readonly="duiLocked"
+                          @blur="validateCustomerDUI"
+                          class="flex-grow pl-5 pr-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-xl"
+                          placeholder="Enter customer DUI"
+                        />
 
-                      <p v-if="customerExists === true" class="text-green-500">
+                        <!-- Botón al lado del input -->
+                        <button
+                          @click="showModal = true"
+                          class="px-3 py-2 color-cyan-500 text-white rounded-xl hover: focus:outline-none"
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="24"
+                            height="24"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            class="lucide lucide-user-round-plus text-blue-600"
+                          >
+                            <path d="M2 21a8 8 0 0 1 13.292-6" />
+                            <circle cx="10" cy="8" r="5" />
+                            <path d="M19 16v6" />
+                            <path d="M22 19h-6" />
+                          </svg>
+                        </button>
+                      </div>
+
+                      <!-- Mensajes de validación -->
+                      <p
+                        v-if="customerExists === true"
+                        class="text-green-500 mt-1"
+                      >
                         DUI válido.
                       </p>
-                      <p v-if="customerExists === false" class="text-red-500">
+                      <p
+                        v-if="customerExists === false"
+                        class="text-red-500 mt-1"
+                      >
                         DUI no encontrado. Ingrese un DUI correcto.
                       </p>
                     </div>
@@ -199,21 +255,29 @@
                       />
                     </div>
 
-                    <div></div>
-                    <div></div>
                     <div class="mt-4 flex space-x-4">
-                      <button
+                      <p
                         @click="addDishToOrder"
-                        class="w-60 py-2 bg-sky-500 text-white rounded-xl hover:bg-sky-600 focus:outline-none"
+                        class="flex items-center w-40 py-2 bg-transparent text-blue-500 cursor-pointer"
                       >
-                        Add Order
-                      </button>
-                      <button
-                        @click="createOrder"
-                        class="w-60 py-2 bg-emerald-500 text-white rounded-xl hover:bg-emerald-600 focus:outline-none"
-                      >
-                        Create Order
-                      </button>
+                        <!-- Icono en color azul -->
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          class="lucide lucide-plus mr-2"
+                        >
+                          <path d="M5 12h14" />
+                          <path d="M12 5v14" />
+                        </svg>
+                        Add Dish
+                      </p>
                     </div>
                   </div>
                 </div>
