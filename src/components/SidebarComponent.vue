@@ -1,7 +1,7 @@
 <template>
   <div :class="['bg-gray-900 text-white transition-all duration-300 ease-in-out', sidebarOpen ? 'w-64' : 'w-0']">
     <div class="p-6">
-      <h1 class="text-2xl font-semibold">Logo</h1>
+      <h1 class="text-2xl font-semibold">Fast</h1>
     </div>
     <nav class="mt-8 p-4">
       <router-link
