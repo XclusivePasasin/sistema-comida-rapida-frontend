@@ -163,9 +163,9 @@ import Sidebar from "@/components/SidebarComponent.vue";
 import Header from "@/components/HeaderComponent.vue";
 import { debounce } from "lodash";
 // Import modals
-import CreateCostumersModal from "@/components/CreateCostumerModal.vue";
+import CreateCostumersModal from "@/components/CreateCustomerModal.vue";
 import EditCostumerModal from "@/components/EditCustomerModal.vue";
-import DeleteCostumerModal from "@/components/DeleteCostumerModal.vue";
+import DeleteCostumerModal from "@/components/DeleteCustomerModal.vue";
 
 export default {
     name: "CustomersView",

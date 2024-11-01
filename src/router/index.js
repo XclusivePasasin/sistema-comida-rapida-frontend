@@ -6,6 +6,7 @@ import CustomersView from "@/views/CustomersView.vue";
 import DishesView from "@/views/DishesView.vue";
 import CategoriesView from "@/views/CategoriesView.vue";
 import TablesView from "@/views/TablesView.vue";
+import OrdersView from "@/views/OrdersView.vue";
 
 const routes = [
   {
@@ -43,6 +44,12 @@ const routes = [
     name: "Tables",
     component: TablesView,
   },
+  {
+    path: "/orders",
+    name: "Orders",
+    component: OrdersView,
+  },
+    
 ];
 
 const router = createRouter({
