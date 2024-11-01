@@ -30,7 +30,7 @@
                   @click="showModal = true"
                   class="px-4 py-2 bg-sky-600 text-white rounded-xl hover:bg-sky-700 focus:outline-none"
                 >
-                  Registrar Cliente
+                  Register Customer
                 </button>
               </div>
 
@@ -200,18 +200,21 @@
                     </div>
 
                     <div></div>
-                    <button
-                      @click="addDishToOrder"
-                      class="mt-4 px-4 py-2 bg-sky-500 text-white rounded-xl hover:bg-emerald-600 focus:outline-none"
-                    >
-                      Add Order
-                    </button>
-                    <button
-                      @click="createOrder"
-                      class="mt-4 px-4 py-2 bg-emerald-500 text-white rounded-xl hover:bg-emerald-600 focus:outline-none"
-                    >
-                      Create Order
-                    </button>
+                    <div></div>
+                    <div class="mt-4 flex space-x-4">
+                      <button
+                        @click="addDishToOrder"
+                        class="w-60 py-2 bg-sky-500 text-white rounded-xl hover:bg-sky-600 focus:outline-none"
+                      >
+                        Add Order
+                      </button>
+                      <button
+                        @click="createOrder"
+                        class="w-60 py-2 bg-emerald-500 text-white rounded-xl hover:bg-emerald-600 focus:outline-none"
+                      >
+                        Create Order
+                      </button>
+                    </div>
                   </div>
                 </div>
 
@@ -320,13 +323,13 @@ export default {
         order_date: new Date().toISOString().slice(0, 19),
         customer_dui: null,
         id_table: null,
-        status: "0",
+        status: 0,
         total: 0,
         payment_method: "cash",
         duiLocked: false,
       },
-      alertMessage: "", // Mensaje de alerta
-      alertClass: "", // Clase de estilo para el fondo y color de texto
+      alertMessage: "",
+      alertClass: "",
       amount: 1,
       orders: [],
       users: [],
@@ -403,12 +406,10 @@ export default {
 
       this.order.total += subtotal;
 
-      // Resetear valores seleccionados
       this.selectedDish = null;
       this.amount = 1;
     },
 
-    // Método para eliminar un platillo de la orden
     removeDishFromOrder(index) {
       const removedItem = this.orderDetails.splice(index, 1)[0];
       this.order.total -= removedItem.subtotal;
@@ -493,7 +494,10 @@ export default {
     },
     // function for validate DUI
     filterDUI() {
-      this.order.customer_dui = this.order.customer_dui.replace(/\D/g, "");
+      this.order.customer_dui = (this.order.customer_dui || "").replace(
+        /\D/g,
+        ""
+      );
       if (this.order.customer_dui.length > 8) {
         this.order.customer_dui = this.order.customer_dui.slice(0, 9);
       }
@@ -584,8 +588,22 @@ export default {
       }
     },
 
+    async updateTableStatus(id, status) {
+      try {
+        await axios.post("http://127.0.0.1:8000/api/tables/update-status", {
+          id_table: id,
+          status: status,
+        });
+      } catch (error) {
+        console.error(
+          "Error updating table status:",
+          error.response?.data || error.message
+        );
+        this.showAlert("Error updating table status.", "error");
+      }
+    },
+
     async createOrder() {
-      // Validación: verificar si todos los campos están completos
       if (
         !this.order.customer_dui ||
         !this.order.id_table ||
@@ -598,14 +616,50 @@ export default {
       }
 
       try {
-        await axios.post("http://127.0.0.1:8000/api/orders/create", this.order);
-        this.fetchOrders();
+        const response = await axios.post(
+          "http://127.0.0.1:8000/api/orders/create",
+          this.order
+        );
+        const createdOrder = response.data.order;
+
+        for (let detail of this.orderDetails) {
+          await axios.post("http://127.0.0.1:8000/api/detail-orders/create", {
+            id_dish: detail.id_dish,
+            id_order: createdOrder.id_order,
+            quantity: detail.quantity,
+            subtotal: detail.subtotal,
+          });
+        }
+
+        await this.updateTableStatus(this.order.id_table, "I");
+
+        this.showAlert("Order created successfully.", "success");
+
+        this.resetOrderForm();
       } catch (error) {
         console.error(
           "Error creating order:",
           error.response?.data || error.message
         );
+        this.showAlert("Error creating order.", "error");
       }
+    },
+
+    resetOrderForm() {
+      this.order = {
+        id_order: null,
+        id_user: null,
+        order_date: new Date().toISOString().slice(0, 19),
+        customer_dui: null,
+        id_table: null,
+        status: 0,
+        total: 0,
+        payment_method: "cash",
+        duiLocked: false,
+      };
+      this.orderDetails = [];
+      this.selectedDish = null;
+      this.amount = 1;
     },
   },
   watch: {
@@ -619,6 +673,12 @@ export default {
   },
 
   mounted() {
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (user) {
+      this.order.id_user = user.id_user;
+      this.userData = user;
+    }
+
     this.fetchAvailableTables();
     this.fetchNextOrderId();
     this.fetchCategories();
