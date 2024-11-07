@@ -10,7 +10,7 @@
 
       <!-- Dynamic Content Area -->
       <main class="flex-1 bg-gray-100">
-        <div class="min-h-screen bg-gray-100 p-8">
+        <div class="min-h-screen bg-gray-100 p-6">
           <div class="max-w-full mx-auto">
             <div class="bg-white shadow-sm rounded-lg overflow-hidden">
               <!-- Alerta dinámica -->
@@ -258,9 +258,8 @@
                     <div class="mt-4 flex space-x-4">
                       <p
                         @click="addDishToOrder"
-                        class="flex items-center w-40 py-2 bg-transparent text-blue-500 cursor-pointer"
+                        class="flex items-center w-40 py-2 text-blue-500 cursor-pointer hover:text-blue-700"
                       >
-                        <!-- Icono en color azul -->
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           width="24"
@@ -271,7 +270,7 @@
                           stroke-width="2"
                           stroke-linecap="round"
                           stroke-linejoin="round"
-                          class="lucide lucide-plus mr-2"
+                          class="lucide lucide-plus mr-1"
                         >
                           <path d="M5 12h14" />
                           <path d="M12 5v14" />
@@ -284,10 +283,10 @@
 
                 <!-- Orders Table -->
                 <div
-                  class="mt-8 max-h-60 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-500"
+                  class="overflow-y-auto max-h-[260px] scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-gray-500"
                 >
                   <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-gray-50">
+                    <thead class="bg-gray-50 sticky top-0" v-if="!showModal">
                       <tr>
                         <th
                           class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
@@ -316,7 +315,9 @@
                         </th>
                       </tr>
                     </thead>
-                    <tbody class="bg-white divide-y divide-gray-200">
+                    <tbody
+                      class="bg-white divide-y divide-gray-200 max-h-60 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-500"
+                    >
                       <tr
                         v-for="(detail, index) in orderDetails"
                         :key="detail.id_dish"
