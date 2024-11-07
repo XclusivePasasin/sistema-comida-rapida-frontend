@@ -73,7 +73,7 @@
 
                 <!-- Table Section with Scroll -->
                 <div
-                  class="overflow-y-auto max-h-[400px] scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-gray-500"
+                  class="overflow-y-auto max-h-[500px] scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-gray-500"
                 >
                   <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50 sticky top-0">
@@ -340,19 +340,15 @@ export default {
           status: updatedTable.status,
         };
 
-        // Agrega un log para confirmar que esta función solo se llama una vez
         console.log("Actualizando tabla con payload:", payload);
 
-        // Enviar la solicitud de actualización al servidor
         const response = await axios.put(
           "http://127.0.0.1:8000/api/tables/update",
            payload
         );
         console.log("Table updated:", response.data);
 
-        // Verificar que la actualización fue exitosa antes de llamar a fetchTables
         if (response.status === 200) {
-          // Refresca la lista de tablas solo si la actualización fue exitosa
           this.fetchTables();
         }
 
@@ -384,23 +380,20 @@ export default {
     async searchTables() {
       try {
         if (!this.searchTerm) {
-          // Si no hay término de búsqueda, traer todas las tablas
           this.fetchTables();
         } else {
-          // Si hay término de búsqueda, realiza la solicitud al endpoint de búsqueda
           const response = await axios.get(
             "http://127.0.0.1:8000/api/tables/search",
             {
               params: {
-                table: this.searchTerm, // El parámetro de búsqueda
+                table: this.searchTerm, 
               },
             }
           );
-          this.tables = response.data.tables; // Asigna los resultados al array de tablas
+          this.tables = response.data.tables; 
           console.log("Tables searched:", this.tables);
         }
       } catch (error) {
-        // Manejo de errores en caso de que falle la solicitud
         console.error(
           "Error searching tables:",
           error.response?.data || error.message

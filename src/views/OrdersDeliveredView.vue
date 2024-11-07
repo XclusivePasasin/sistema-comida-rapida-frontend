@@ -22,7 +22,7 @@
 
                 <!-- Table Section with Scroll -->
                 <div
-                  class="overflow-y-auto max-h-[240px] scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-gray-500"
+                  class="overflow-y-auto max-h-[290px] scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-gray-500"
                 >
                   <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50 sticky top-0">
@@ -66,7 +66,7 @@
                           colspan="6"
                           class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-500"
                         >
-                          There are no paid orders at this time.
+                          There are no delivered orders at this time.
                         </td>
                       </tr>
                       <tr v-for="order in orders" :key="order.id_order">
@@ -134,7 +134,7 @@
                 </h2>
 
                 <div
-                  class="overflow-y-auto max-h-[240px] scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-gray-500"
+                  class="overflow-y-auto max-h-[340px] scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-gray-500"
                 >
                   <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50 sticky top-0">
@@ -174,7 +174,7 @@
                     <tbody class="bg-white divide-y divide-gray-200">
                       <tr v-if="paidOrders.length === 0">
                         <td
-                          colspan="5"
+                          colspan="6"
                           class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-500"
                         >
                           There are no paid orders at this time.
@@ -241,6 +241,48 @@
                   </table>
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
+
+         <!-- Confirmation Modal for Delivery -->
+         <div
+          v-if="showConfirmModal"
+          class="fixed inset-0 flex bg-gray-600 bg-opacity-75 items-center justify-center z-50"
+        >
+          <div class="bg-white rounded-lg w-1/3 p-6 relative">
+            <button
+              @click="closeConfirmModal"
+              class="absolute top-2 right-2 text-gray-600 hover:text-gray-800"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-5 w-5"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                  clip-rule="evenodd"
+                />
+              </svg>
+            </button>
+            <h3 class="text-lg font-semibold mb-4">Confirm Delivery</h3>
+            <p>Are you sure you want to mark this order as delivered?</p>
+            <div class="mt-4 flex justify-end space-x-2">
+              <button
+                @click="closeConfirmModal"
+                class="px-4 py-2 bg-gray-300 text-gray-700 rounded-xl"
+              >
+                Cancel
+              </button>
+              <button
+                @click="updateOrderStatus"
+                class="px-4 py-2 bg-emerald-500 text-white rounded-xl"
+              >
+                Confirm
+              </button>
             </div>
           </div>
         </div>
@@ -426,13 +468,14 @@ export default {
         const response = await axios.get(
           "http://127.0.0.1:8000/api/orders/status/1"
         );
-        this.orders = response.data.orders;
+        this.orders = response.data.orders || [];
         console.log("Delivered orders:", this.orders);
       } catch (error) {
         console.error(
           "Error fetching delivered orders:",
           error.response?.data || error.message
         );
+        this.orders = [];
       }
     },
     async generateInvoice(order) {
@@ -524,7 +567,6 @@ export default {
         console.log("Order status updated to paid:", this.orderToUpdate.id_table);
         console.log("Order Data:", orderResponse.data);
 
-        // Verificar que el id_table esté disponible y luego actualizar el estado de la mesa
         if (this.orderToUpdate.id_table) {
           console.log(
             "Attempting to update table status for table ID:",
@@ -535,7 +577,7 @@ export default {
             `http://127.0.0.1:8000/api/tables/update-status`,
             {
               id_table: this.orderToUpdate.id_table,
-              status: "A", // Cambiar el estado a "A" (Disponible)
+              status: "A",
             }
           );
 
@@ -546,9 +588,8 @@ export default {
           );
         }
 
-        // Actualizar las listas de pedidos y cerrar el modal
-        this.fetchDeliveredOrders();
-        this.fetchPaidOrders();
+        await this.fetchDeliveredOrders();
+        await this.fetchPaidOrders();
         this.closeConfirmModal();
       } catch (error) {
         console.error(

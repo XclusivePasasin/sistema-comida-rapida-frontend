@@ -65,10 +65,10 @@
                     <tbody class="bg-white divide-y divide-gray-200">
                       <tr v-if="orders.length === 0">
                         <td
-                          colspan="7"
+                          colspan="8"
                           class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-500"
                         >
-                          No hay órdenes disponibles en estos momentos.
+                          There are no orders available at this time.
                         </td>
                       </tr>
                       <tr v-for="order in orders" :key="order.id_order">
@@ -110,8 +110,8 @@
                               order.status === "0"
                                 ? "Pending"
                                 : order.status === "1"
-                                ? "In Progress"
-                                : "Completed"
+                                ? "Delivered"
+                                : "Paid"
                             }}
                           </span>
                         </td>
@@ -144,9 +144,58 @@
                         <td
                           class="px-6 py-4 whitespace-nowrap text-sm font-medium flex space-x-4"
                         >
+                          <!-- Botón para actualizar el estado de la orden a "Entregado" si el estado es 0 (Pendiente) -->
                           <button
+                            v-if="order.status === '0'"
+                            @click="confirmUpdateOrderStatus(order)"
+                            class="flex px-2 py-2 bg-emerald-500 text-white rounded-xl text-medium hover:bg-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2"
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="24"
+                              height="24"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              stroke-width="2"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              class="lucide lucide-file-check"
+                            >
+                              <path
+                                d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"
+                              />
+                              <path d="M14 2v4a2 2 0 0 0 2 2h4" />
+                              <path d="m9 15 2 2 4-4" />
+                            </svg>
+                          </button>
+
+                          <button
+                            v-if="order.status === '1'"
+                            @click="confirmPayment(order)"
+                            class="flex px-2 py-2 bg-emerald-500 text-white rounded-xl text-medium hover:bg-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2"
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="24"
+                              height="24"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              stroke-width="2"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              class="lucide lucide-credit-card"
+                            >
+                              <rect width="20" height="14" x="2" y="5" rx="2" />
+                              <line x1="2" x2="22" y1="10" y2="10" />
+                            </svg>
+                          </button>
+
+                          <button
+                            v-if="order.status === '2'"
                             @click="generateInvoice(order)"
-                            class="flex px-2 py-2 bg-red-500 text-white rounded-xl text-medium hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
+                            class="flex px-2 py-2 bg-red-500 text-white rounded-xl text-medium hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
                           >
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
@@ -245,7 +294,7 @@
 
         <!-- Confirmation Modal for Payment -->
         <div
-          v-if="showConfirmModal"
+          v-if="showConfirmModalPayment"
           class="fixed inset-0 flex bg-gray-600 bg-opacity-75 items-center justify-center z-50"
         >
           <div class="bg-white rounded-lg w-1/3 p-6 relative">
@@ -332,6 +381,92 @@
             </form>
           </div>
         </div>
+
+        <!-- Modal for viewing invoice -->
+        <div
+          v-if="showInvoiceModal"
+          class="fixed inset-0 flex items-center justify-center bg-gray-600 bg-opacity-75 z-50"
+        >
+          <div
+            class="bg-white rounded-lg w-11/12 h-5/6 p-4 relative overflow-hidden"
+          >
+            <button
+              @click="closeInvoiceModal"
+              class="absolute top-4 right-4 text-gray-600 hover:text-gray-800"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-5 w-5"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                  clip-rule="evenodd"
+                />
+              </svg>
+            </button>
+            <h3 class="text-lg font-semibold mb-4">Factura</h3>
+            <iframe
+              :src="invoiceUrl"
+              class="w-full h-full border-0 overflow-auto"
+              style="height: calc(100% - 50px)"
+            >
+              frameborder="0" ></iframe
+            >
+            <div class="mt-4 flex justify-end">
+              <button
+                @click="downloadInvoice"
+                class="px-4 py-2 bg-blue-500 text-white rounded-lg"
+              >
+                Descargar Factura
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Confirmation Modal for Delivery -->
+        <div
+          v-if="showConfirmModal"
+          class="fixed inset-0 flex bg-gray-600 bg-opacity-75 items-center justify-center z-50"
+        >
+          <div class="bg-white rounded-lg w-1/3 p-6 relative">
+            <button
+              @click="closeConfirmModalDelivered"
+              class="absolute top-2 right-2 text-gray-600 hover:text-gray-800"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-5 w-5"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                  clip-rule="evenodd"
+                />
+              </svg>
+            </button>
+            <h3 class="text-lg font-semibold mb-4">Confirm Delivery</h3>
+            <p>Are you sure you want to mark this order as delivered?</p>
+            <div class="mt-4 flex justify-end space-x-2">
+              <button
+                @click="closeConfirmModal"
+                class="px-4 py-2 bg-gray-300 text-gray-700 rounded-xl"
+              >
+                Cancel
+              </button>
+              <button
+                @click="updateOrderStatus"
+                class="px-4 py-2 bg-emerald-500 text-white rounded-xl"
+              >
+                Confirm
+              </button>
+            </div>
+          </div>
+        </div>
       </main>
     </div>
   </div>
@@ -353,7 +488,9 @@ export default {
       sidebarOpen: true,
       orders: [],
       showModal: false,
+      showConfirmModalPayment: false,
       showConfirmModal: false,
+      showInvoiceModal: false,
       selectedOrder: null,
       orderToUpdate: null,
       orderDetails: [],
@@ -369,6 +506,97 @@ export default {
       this.showModal = false;
       this.selectedOrder = null;
       this.orderDetails = [];
+    },
+    confirmUpdateOrderStatus(order) {
+      this.orderToUpdate = order;
+      this.showConfirmModal = true;
+    },
+    closeConfirmModal() {
+      this.showConfirmModal = false; // Cierra el modal de confirmación de entrega
+      this.showConfirmModalPayment = false; // Cierra el modal de confirmación de pago
+      this.orderToUpdate = null; // Restablece el pedido seleccionado
+    },
+
+    async generateInvoice(order) {
+      try {
+        const response = await axios.get(
+          `http://127.0.0.1:8000/api/orders/invoice/${order.id_order}`
+        );
+
+        this.invoiceUrl = response.data.file_url;
+        this.showInvoiceModal = true;
+      } catch (error) {
+        console.error(
+          "Error generating invoice:",
+          error.response?.data || error.message
+        );
+        alert("Hubo un error al generar la factura.");
+      }
+    },
+    closeInvoiceModal() {
+      this.showInvoiceModal = false;
+      URL.revokeObjectURL(this.invoiceUrl);
+      this.invoiceUrl = null;
+    },
+    downloadInvoice() {
+      const link = document.createElement("a");
+      link.href = this.invoiceUrl;
+      link.setAttribute(
+        "download",
+        `Factura_Order_${this.currentOrder.id_order}.pdf`
+      );
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    },
+    async markOrderAsPaid() {
+      if (this.received < this.orderToUpdate.total) {
+        alert("The received amount must be at least equal to the total.");
+        return;
+      }
+
+      try {
+        const orderResponse = await axios.put(
+          `http://127.0.0.1:8000/api/orders/update/${this.orderToUpdate.id_order}`,
+          {
+            status: 2,
+          }
+        );
+        console.log(
+          "Order status updated to paid:",
+          this.orderToUpdate.id_table
+        );
+        console.log("Order Data:", orderResponse.data);
+
+        if (this.orderToUpdate.id_table) {
+          console.log(
+            "Attempting to update table status for table ID:",
+            this.orderToUpdate.id_table
+          );
+
+          const tableResponse = await axios.put(
+            `http://127.0.0.1:8000/api/tables/update-status`,
+            {
+              id_table: this.orderToUpdate.id_table,
+              status: "A",
+            }
+          );
+
+          console.log("Table status updated:", tableResponse.data);
+        } else {
+          console.warn(
+            "No table ID found for this order. Skipping table update."
+          );
+        }
+        this.fetchDeliveredOrders();
+        this.closeConfirmModal();
+      } catch (error) {
+        console.error(
+          "Error updating order status to paid:",
+          error.response?.data || error.message
+        );
+        alert("Hubo un error al actualizar el estado del pedido o la mesa.");
+      }
     },
     async fetchDeliveredOrders() {
       try {
@@ -399,21 +627,33 @@ export default {
         );
       }
     },
-    //   viewOrderDetails(order) {
-    //     // Implement your logic to view order details
-    //   },
-    //   generateInvoice(order) {
-    //     // Implement your logic to generate invoice
-    //   },
     confirmPayment(order) {
       this.orderToUpdate = order;
       this.received = 0;
       this.change = 0;
-      this.showConfirmModal = true;
+      this.showConfirmModalPayment = true;
     },
-    closeConfirmModal() {
+    closeConfirmModalDelivered() {
       this.showConfirmModal = false;
       this.orderToUpdate = null;
+    },
+    async updateOrderStatus() {
+      try {
+        const response = await axios.put(
+          `http://127.0.0.1:8000/api/orders/update/${this.orderToUpdate.id_order}`,
+          {
+            status: 1,
+          }
+        );
+        console.log("Order status updated:", response.data);
+        this.fetchDeliveredOrders();
+        this.closeConfirmModalDelivered();
+      } catch (error) {
+        console.error(
+          "Error updating order status:",
+          error.response?.data || error.message
+        );
+      }
     },
   },
   mounted() {

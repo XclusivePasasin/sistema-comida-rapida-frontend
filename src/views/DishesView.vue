@@ -76,7 +76,7 @@
 
                 <!-- Table Section with Scroll -->
                 <div
-                  class="overflow-y-auto max-h-[400px] scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-gray-500"
+                  class="overflow-y-auto max-h-[500px] scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-gray-500"
                 >
                   <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50 sticky top-0">

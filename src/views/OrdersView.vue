@@ -283,7 +283,7 @@
 
                 <!-- Orders Table -->
                 <div
-                  class="overflow-y-auto max-h-[150px] scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-gray-500"
+                  class="overflow-y-auto max-h-[260px] scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-gray-500"
                 >
                   <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50 sticky top-0" v-if="!showModal">
