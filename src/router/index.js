@@ -7,6 +7,9 @@ import DishesView from "@/views/DishesView.vue";
 import CategoriesView from "@/views/CategoriesView.vue";
 import TablesView from "@/views/TablesView.vue";
 import OrdersView from "@/views/OrdersView.vue";
+import OrdersPendingView from "@/views/OrdersPendingView.vue";
+import OrdersDeliveredView from "@/views/OrdersDeliveredView.vue";
+import OrdersAllView from "@/views/OrdersAllView.vue";
 
 const routes = [
   {
@@ -49,6 +52,22 @@ const routes = [
     name: "Orders",
     component: OrdersView,
   },
+  {
+    path: "/ordersPending",
+    name: "OrdersPending",
+    component: OrdersPendingView,
+  },
+  {
+    path: "/ordersDelivered",
+    name: "OrdersDelivered",
+    component: OrdersDeliveredView,
+  },
+  {
+    path: "/ordersAll",
+    name: "OrdersAll",
+    component: OrdersAllView,
+  },
+    
     
 ];
 

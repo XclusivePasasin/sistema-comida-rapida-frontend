@@ -40,6 +40,24 @@
       >
         Tables
       </router-link>
+      <router-link
+        to="/ordersPending"
+        class="block py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700 hover:text-white"
+      >
+        Orders Pending
+      </router-link>
+      <router-link
+        to="/ordersDelivered"
+        class="block py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700 hover:text-white"
+      >
+        Orders Delivered
+      </router-link>
+      <router-link
+        to="/ordersAll"
+        class="block py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700 hover:text-white"
+      >
+        Orders All
+      </router-link>
     </nav>
   </div>
 </template>
