@@ -441,26 +441,17 @@ export default {
     addDishToOrder() {
       if (!this.selectedDish) return;
 
-      if (this.amount <= 0 || !Number.isInteger(this.amount)) {
-        this.showAlert(
-          "It is impossible to add this dish as the quantity is not valid."
-        );
-        return;
-      }
-
       const { id_dish, dish_name, price } = this.selectedDish;
-      const subtotal = price * this.amount;
 
       const existingDish = this.orderDetails.find(
-        (detail) => detail.id_dish === id_dish
+        (detail) => detail.dish_name === dish_name
       );
+
       if (existingDish) {
-        this.showAlert(
-          "This dish is already in the order. You cannot add it again."
-        );
         return;
       }
 
+      const subtotal = price * this.amount;
       this.orderDetails.push({
         id_dish,
         dish_name,
@@ -470,9 +461,7 @@ export default {
       });
 
       this.order.total += subtotal;
-
-      this.selectedDish = null;
-      this.amount = 1;
+      this.amount = 1; 
     },
 
     removeDishFromOrder(index) {
