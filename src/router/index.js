@@ -10,6 +10,9 @@ import OrdersView from "@/views/OrdersView.vue";
 import OrdersPendingView from "@/views/OrdersPendingView.vue";
 import OrdersDeliveredView from "@/views/OrdersDeliveredView.vue";
 import OrdersAllView from "@/views/OrdersAllView.vue";
+import SalesCategoriesView from "@/views/SalesCategoriesView.vue";
+import SalesDailyView from "@/views/SalesDailyView.vue";
+import SalesPeriodicView from "@/views/SalesPeriodicView.vue";
 
 const routes = [
   {
@@ -67,8 +70,21 @@ const routes = [
     name: "OrdersAll",
     component: OrdersAllView,
   },
-    
-    
+  {
+    path: "/salesCategories",
+    name: "SalesCategories",
+    component: SalesCategoriesView,
+  },
+  {
+    path: "/salesDaily",
+    name: "SalesDaily",
+    component: SalesDailyView,
+  },
+  {
+    path: "/salesPeriodic",
+    name: "SalesPeriodic",
+    component: SalesPeriodicView,
+  }
 ];
 
 const router = createRouter({

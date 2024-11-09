@@ -476,6 +476,7 @@
 import axios from "axios";
 import Sidebar from "@/components/SidebarComponent.vue";
 import Header from "@/components/HeaderComponent.vue";
+import { mapGetters } from 'vuex'
 
 export default {
   name: "DeliveredOrdersView",
@@ -512,9 +513,9 @@ export default {
       this.showConfirmModal = true;
     },
     closeConfirmModal() {
-      this.showConfirmModal = false; // Cierra el modal de confirmación de entrega
-      this.showConfirmModalPayment = false; // Cierra el modal de confirmación de pago
-      this.orderToUpdate = null; // Restablece el pedido seleccionado
+      this.showConfirmModal = false; 
+      this.showConfirmModalPayment = false; 
+      this.orderToUpdate = null; 
     },
 
     async generateInvoice(order) {
@@ -657,7 +658,17 @@ export default {
     },
   },
   mounted() {
+    if (!this.isAdmin) {
+      this.$router.push({ name: 'Dashboard' });
+    }
     this.fetchDeliveredOrders();
+  },
+  computed: {
+    ...mapGetters(['getUserRole']), 
+
+    isAdmin() {
+      return this.getUserRole === 'A';
+    }
   },
 };
 </script>

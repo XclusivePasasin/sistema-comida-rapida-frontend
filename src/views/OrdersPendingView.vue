@@ -63,7 +63,7 @@
                           colspan="6"
                           class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-500"
                         >
-                        No orders available at this time.
+                          No orders available at this time.
                         </td>
                       </tr>
                       <tr v-for="order in orders" :key="order.id_order">
@@ -266,6 +266,7 @@
 import axios from "axios";
 import Sidebar from "@/components/SidebarComponent.vue";
 import Header from "@/components/HeaderComponent.vue";
+import { mapGetters } from "vuex";
 
 export default {
   name: "PendingOrdersView",
@@ -350,7 +351,17 @@ export default {
       }
     },
   },
+  computed: {
+    ...mapGetters(["getUserRole"]),
+
+    isWaiter() {
+      return this.getUserRole === "M" || this.getUserRole === "A";
+    },
+  },
   mounted() {
+    if (!this.isWaiter) {
+      this.$router.push({ name: "Dashboard" });
+    }
     this.fetchPendingOrders();
   },
 };

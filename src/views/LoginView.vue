@@ -1,82 +1,64 @@
 <template>
-    <v-container fluid class="fill-height pa-0">
-      <v-row no-gutters>
-        <v-col
-          cols="12"
-          md="5"
-          class="d-none d-md-flex"
-          style="background-color: #26a69a; height: 100vh"
-        >
-          <v-sheet
-            class="d-flex align-center justify-center"
-            color="transparent"
-            width="100%"
-          >
-            <h1 class="text-h2 font-weight-bold text-white">Fast!</h1>
-          </v-sheet>
-        </v-col>
-  
-        <v-col
-          cols="12"
-          md="7"
-          class="d-flex align-center justify-center"
-          style="height: 100vh"
-        >
-          <v-sheet color="transparent" max-width="500px" width="100%">
-            <h1
-              class="text-h3 font-weight-bold mb-12 text-center"
-              style="color: #26a69a"
-            >
-              Welcome
-            </h1>
-            <h3 class="text-center mb-6" style="color: #6c757d">
-              Sign in to your account
-            </h3>
-            <!-- message error -->
-            <p v-if="errorMessage" class="error-message text-center">{{ errorMessage }}</p>
-            <v-form @submit.prevent="onSubmit">
-              <v-text-field
+  <div class="flex h-screen">
+    <div class="hidden md:flex md:w-5/12 bg-gray-900 h-full">
+      <div class="flex items-center justify-center w-full">
+        <h1 class="text-7xl font-bold text-white">Fast!</h1>
+      </div>
+    </div>
+
+    <div class="flex w-full md:w-7/12 items-center justify-center h-full">
+      <div class="w-full max-w-md">
+        <h1 class="text-4xl font-bold mb-6 text-center text-gray-700">Welcome</h1>
+        <h3 class="text-center mb-4 text-gray-600">Sign in to your account</h3>
+        <!-- error message -->
+        <p v-if="errorMessage" class="text-center text-red-600 mb-4">{{ errorMessage }}</p>
+        <form @submit.prevent="onSubmit">
+          <div class="mb-4">
+            <label class="block text-gray-700">Username</label>
+            <div class="flex items-center border border-gray-300 rounded-xl">
+              <span class="px-3 text-gray-600">
+                <i class="mdi mdi-account"></i>
+              </span>
+              <input
                 v-model="username"
-                label="Username"
+                type="text"
                 placeholder="Enter your username"
-                prepend-inner-icon="mdi-account"
-                variant="outlined"
-                class="mb-4"
-                rounded
-                required
-                
-              ></v-text-field>
-              <v-text-field
+                class="w-full px-3 py-2 rounded-r focus:outline-none rounded-xl"
+              />
+            </div>
+          </div>
+
+          <div class="mb-4">
+            <label class="block text-gray-700">Password</label>
+            <div class="flex items-center border border-gray-300 rounded rounded-xl">
+              <span class="px-3 text-gray-600">
+                <i class="mdi mdi-lock"></i>
+              </span>
+              <input
                 v-model="password"
-                label="Password"
-                placeholder="Enter your password"
-                prepend-inner-icon="mdi-lock"
                 :type="showPassword ? 'text' : 'password'"
-                :append-inner-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
-                @click:append-inner="showPassword = !showPassword"
-                variant="outlined"
-                class="mb-4"
-                rounded
-                required
-              ></v-text-field>
-              <v-btn
-                block
-                color="teal-lighten-1"
-                rounded
-                size="large"
-                type="submit"
-              >
-                Login
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-log-in"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" x2="3" y1="12" y2="12"/></svg>
-              </v-btn>
-            </v-form>
-          </v-sheet>
-        </v-col>
-      </v-row>
-    </v-container>
-  </template>
-  
-  <script>
+                placeholder="Enter your password"
+                class="w-full px-3 py-2 rounded-r focus:outline-none rounded-xl"
+              />
+              <span class="px-3 text-gray-600 cursor-pointer" @click="showPassword = !showPassword">
+                <i :class="showPassword ? 'mdi mdi-eye' : 'mdi mdi-eye-off'"></i>
+              </span>
+            </div>
+          </div>
+
+          <button
+            type="submit"
+            class="w-full bg-gray-800 hover:bg-gray-900 text-white font-bold py-2 px-4 rounded-xl flex items-center justify-center"
+          >
+            Login
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
 import axios from "axios";
 
 export default {
@@ -85,12 +67,16 @@ export default {
       username: "",
       password: "",
       showPassword: false,
-      errorMessage: null, 
+      errorMessage: null,
     };
   },
   methods: {
     async onSubmit() {
-      this.errorMessage = null; 
+      this.errorMessage = null;
+      if (!this.username || !this.password) {
+        this.errorMessage = "Please enter your username or password";
+        return;
+      }
       try {
         const response = await axios.post("http://127.0.0.1:8000/api/users/login", {
           username: this.username,
@@ -98,9 +84,8 @@ export default {
         });
 
         if (response.data.code === 200) {
-          // store user data in localStorage
           const information_user = response.data.user;
-          localStorage.setItem('user', JSON.stringify(information_user));
+          localStorage.setItem("user", JSON.stringify(information_user));
           this.$router.push({ path: "/dashboard" });
         } else {
           this.errorMessage = response.data.message || "Invalid username or password";
@@ -114,19 +99,9 @@ export default {
 };
 </script>
 
-  
-  <style scoped>
-
-  .fill-height {
-    height: 100%;
-  }
-
-  .error-message {
-  color: darkred;
+<style scoped>
+.error-message {
   font-size: 18px;
   margin-bottom: 16px;
-  text-align: center;
 }
-
 </style>
-  

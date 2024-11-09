@@ -13,7 +13,6 @@
         <div class="min-h-screen bg-gray-100 p-6">
           <div class="max-w-full mx-auto">
             <div class="bg-white shadow-sm rounded-lg overflow-hidden">
-              <!-- Alerta dinámica -->
               <div
                 v-if="alertMessage"
                 :class="alertClass"
@@ -21,7 +20,6 @@
               >
                 {{ alertMessage }}
               </div>
-              <!-- Contenedor que agrupa el título y el botón -->
               <div class="flex justify-between items-center p-6">
                 <h2 class="text-xl font-semibold text-gray-700">
                   Create Order
@@ -133,7 +131,6 @@
                         </button>
                       </div>
 
-                      <!-- Mensajes de validación -->
                       <p
                         v-if="customerExists === true"
                         class="text-green-500 mt-1"
@@ -441,26 +438,17 @@ export default {
     addDishToOrder() {
       if (!this.selectedDish) return;
 
-      if (this.amount <= 0 || !Number.isInteger(this.amount)) {
-        this.showAlert(
-          "It is impossible to add this dish as the quantity is not valid."
-        );
-        return;
-      }
-
       const { id_dish, dish_name, price } = this.selectedDish;
-      const subtotal = price * this.amount;
 
       const existingDish = this.orderDetails.find(
-        (detail) => detail.id_dish === id_dish
+        (detail) => detail.dish_name === dish_name
       );
+
       if (existingDish) {
-        this.showAlert(
-          "This dish is already in the order. You cannot add it again."
-        );
         return;
       }
 
+      const subtotal = price * this.amount;
       this.orderDetails.push({
         id_dish,
         dish_name,
@@ -470,9 +458,7 @@ export default {
       });
 
       this.order.total += subtotal;
-
-      this.selectedDish = null;
-      this.amount = 1;
+      this.amount = 1; 
     },
 
     removeDishFromOrder(index) {
