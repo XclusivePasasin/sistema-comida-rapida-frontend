@@ -20,4 +20,10 @@ npm install axios
 1 - npm install lodash
 
 ```
+### Install Calendar Picker
+```
+url: https://edisdev.github.io/vue-datepicker-ui/custom-style.html
+1 - npm install vue-datepicker-ui@vue3 --save
+
+```
 
