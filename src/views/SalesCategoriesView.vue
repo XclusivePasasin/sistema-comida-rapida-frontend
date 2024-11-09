@@ -8,19 +8,26 @@
       <!-- Header Component -->
       <Header @toggleSidebar="toggleSidebar" />
 
-      <!-- Alerta dinámica -->
+      <!-- Alert Dynamic -->
       <div
         v-if="alertMessage"
         :class="alertClass"
         class="fixed top-4 right-5 max-w-xs w-auto p-3 rounded-lg text-white shadow-lg z-50 flex items-center space-x-2"
       >
         <span>{{ alertMessage }}</span>
-        <button @click="closeAlert" class="ml-2 text-sm text-white font-bold">&times;</button>
+        <button @click="closeAlert" class="ml-2 text-sm text-white font-bold">
+          &times;
+        </button>
       </div>
 
       <!-- Dynamic Content Area -->
       <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 p-8">
-        <div class="max-w-full mx-auto min-h-[680px] bg-white rounded-lg shadow-sm p-6">
+        <div
+          class="max-w-full mx-auto min-h-[680px] bg-white rounded-lg shadow-sm p-6"
+        >
+          <h2 class="text-xl font-semibold mb-3 text-gray-700">
+            Reports Categories
+          </h2>
           <div class="space-y-6">
             <!-- Date Selection and Button Container -->
             <div class="flex flex-col sm:flex-row gap-8">
@@ -44,6 +51,7 @@
               <div class="flex items-end">
                 <button
                   @click="generateReport"
+                  :disabled="!startDate || !endDate"
                   class="flex px-6 py-2 bg-emerald-500 text-white rounded-xl hover:bg-emerald-600 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <svg
@@ -74,7 +82,9 @@
             </div>
 
             <!-- Results Area -->
-            <div class="mt-6 border border-gray-200 rounded-lg p-4 min-h-[500px]">
+            <div
+              class="mt-6 border border-gray-200 rounded-lg p-4 min-h-[500px]"
+            >
               <div class="space-y-4" v-if="reportUrl">
                 <iframe
                   :src="reportUrl"
@@ -82,7 +92,10 @@
                   frameborder="0"
                 ></iframe>
               </div>
-              <div v-else class="flex items-center justify-center h-[450px] text-gray-400">
+              <div
+                v-else
+                class="flex items-center justify-center h-[450px] text-gray-400"
+              >
                 Select a date range and generate the invoice
               </div>
             </div>
@@ -99,6 +112,7 @@ import Header from "@/components/HeaderComponent.vue";
 import "vue-datepicker-ui/lib/vuedatepickerui.css";
 import VueDatepickerUi from "vue-datepicker-ui";
 import axios from "axios";
+import { mapGetters } from "vuex";
 
 export default {
   name: "InvoiceView",
@@ -114,21 +128,24 @@ export default {
       endDate: null,
       reportUrl: null,
       alertMessage: null,
-      alertType: 'success', 
+      alertType: "success",
     };
   },
   computed: {
     alertClass() {
-      return this.alertType === 'success'
-        ? 'bg-emerald-500'
-        : 'bg-red-500';
+      return this.alertType === "success" ? "bg-emerald-500" : "bg-red-500";
+    },
+    ...mapGetters(["getUserRole"]),
+
+    isAdmin() {
+      return this.getUserRole === "A";
     },
   },
   methods: {
     toggleSidebar() {
       this.sidebarOpen = !this.sidebarOpen;
     },
-    showAlert(message, type = 'success') {
+    showAlert(message, type = "success") {
       this.alertMessage = message;
       this.alertType = type;
       setTimeout(() => {
@@ -140,11 +157,22 @@ export default {
     },
     async generateReport() {
       try {
-        const formattedStartDate = this.startDate ? this.startDate.toISOString().split("T")[0] : null;
-        const formattedEndDate = this.endDate ? this.endDate.toISOString().split("T")[0] : null;
+        const formattedStartDate = this.startDate
+          ? this.startDate.toISOString().split("T")[0]
+          : null;
+        const formattedEndDate = this.endDate
+          ? this.endDate.toISOString().split("T")[0]
+          : null;
 
         if (!formattedStartDate || !formattedEndDate) {
-          this.showAlert("Please select both start and end dates.", 'error');
+          this.showAlert("Please select both start and end dates.", "error");
+          return;
+        }
+        if (formattedStartDate > formattedEndDate) {
+          this.showAlert(
+            "The start date cannot be later than the end date.",
+            "error"
+          );
           return;
         }
 
@@ -158,13 +186,22 @@ export default {
 
         if (response.data.file_url) {
           this.reportUrl = response.data.file_url;
-          this.showAlert(response.data.message || "Report generated successfully.", 'success');
+          this.showAlert(
+            response.data.message || "Report generated successfully.",
+            "success"
+          );
         } else {
-          this.showAlert(response.data.message || "Error generating report.", 'error');
+          this.showAlert(
+            response.data.message || "Error generating report.",
+            "error"
+          );
         }
       } catch (error) {
         console.error("Error generating report:", error);
-        this.showAlert("An error occurred while generating the report.", 'error');
+        this.showAlert(
+          "An error occurred while generating the report.",
+          "error"
+        );
       }
     },
     clearFields() {
@@ -173,6 +210,11 @@ export default {
       this.reportUrl = null;
       this.closeAlert();
     },
+  },
+  mounted() {
+    if (!this.isAdmin) {
+      this.$router.push({ name: "Dashboard" });
+    }
   },
 };
 </script>

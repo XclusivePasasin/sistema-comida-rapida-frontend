@@ -12,6 +12,7 @@ import OrdersDeliveredView from "@/views/OrdersDeliveredView.vue";
 import OrdersAllView from "@/views/OrdersAllView.vue";
 import SalesCategoriesView from "@/views/SalesCategoriesView.vue";
 import SalesDailyView from "@/views/SalesDailyView.vue";
+import SalesPeriodicView from "@/views/SalesPeriodicView.vue";
 
 const routes = [
   {
@@ -78,6 +79,11 @@ const routes = [
     path: "/salesDaily",
     name: "SalesDaily",
     component: SalesDailyView,
+  },
+  {
+    path: "/salesPeriodic",
+    name: "SalesPeriodic",
+    component: SalesPeriodicView,
   }
 ];
 

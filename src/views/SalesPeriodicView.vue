@@ -26,25 +26,32 @@
           class="max-w-full mx-auto min-h-[680px] bg-white rounded-lg shadow-sm p-6"
         >
           <h2 class="text-xl font-semibold mb-3 text-gray-700">
-            Reports Daily Sales
+            Reports Periodic
           </h2>
           <div class="space-y-6">
             <!-- Date Selection and Button Container -->
             <div class="flex flex-col sm:flex-row gap-8">
-              <!-- Datepicker for selecting report date -->
               <Datepicker
-                v-model="reportDate"
-                placeholder="Select Date"
+                v-model="startDate"
+                placeholder="Start Date"
                 lang="en"
                 format="yyyy-MM-dd"
                 showClearButton="true"
                 class="rounded-xl calendar-style"
               />
-              <div class="flex items-end gap-3">
-                <!-- Button to generate report -->
+              <Datepicker
+                v-model="endDate"
+                placeholder="End Date"
+                lang="en"
+                format="yyyy-MM-dd"
+                showClearButton="true"
+                circle="true"
+                class="rounded-xl calendar-style"
+              />
+              <div class="flex items-end">
                 <button
                   @click="generateReport"
-                  :disabled="!reportDate"
+                  :disabled="!startDate || !endDate"
                   class="flex px-6 py-2 bg-emerald-500 text-white rounded-xl hover:bg-emerald-600 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <svg
@@ -65,11 +72,9 @@
                   </svg>
                   Generate Report
                 </button>
-
-                <!-- Clear button -->
                 <button
                   @click="clearFields"
-                  class="flex px-6 py-2 bg-gray-400 text-white rounded-xl hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-300 focus:ring-offset-2"
+                  class="flex px-6 py-2 ml-3 bg-gray-400 text-white rounded-xl hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-300 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Clear
                 </button>
@@ -78,7 +83,7 @@
 
             <!-- Results Area -->
             <div
-              class="mt-6 border border-gray-200 rounded-lg p-4 min-h-[520px]"
+              class="mt-6 border border-gray-200 rounded-lg p-4 min-h-[500px]"
             >
               <div class="space-y-4" v-if="reportUrl">
                 <iframe
@@ -91,7 +96,8 @@
                 v-else
                 class="flex items-center justify-center h-[450px] text-gray-400"
               >
-                Select a date and generate the report
+                Select a date range and click "Generate Report" to view the
+                sales report
               </div>
             </div>
           </div>
@@ -119,7 +125,8 @@ export default {
   data() {
     return {
       sidebarOpen: true,
-      reportDate: null,
+      startDate: null,
+      endDate: null,
       reportUrl: null,
       alertMessage: null,
       alertType: "success",
@@ -151,21 +158,30 @@ export default {
     },
     async generateReport() {
       try {
-        const formattedDate = this.reportDate
-          ? this.reportDate.toISOString().split("T")[0]
+        const formattedStartDate = this.startDate
+          ? this.startDate.toISOString().split("T")[0]
+          : null;
+        const formattedEndDate = this.endDate
+          ? this.endDate.toISOString().split("T")[0]
           : null;
 
-        if (!formattedDate) {
-          this.showAlert("Please select a date.", "error");
+        if (!formattedStartDate || !formattedEndDate) {
+          this.showAlert("Please select both start and end dates.", "error");
+          return;
+        }
+        if (formattedStartDate > formattedEndDate) {
+          this.showAlert(
+            "The start date cannot be later than the end date.",
+            "error"
+          );
           return;
         }
 
-        console.log("Requesting report for date:", formattedDate);
-
         const response = await axios.post(
-          "http://127.0.0.1:8000/api/report/daily-sales",
+          "http://127.0.0.1:8000/api/report/periodic-sales",
           {
-            date: formattedDate,
+            start_date: formattedStartDate,
+            end_date: formattedEndDate,
           }
         );
 
@@ -182,10 +198,7 @@ export default {
           );
         }
       } catch (error) {
-        console.error(
-          "Error generating report:",
-          error.response ? error.response.data : error.message
-        );
+        console.error("Error generating report:", error);
         this.showAlert(
           "An error occurred while generating the report.",
           "error"
@@ -193,7 +206,8 @@ export default {
       }
     },
     clearFields() {
-      this.reportDate = null;
+      this.startDate = null;
+      this.endDate = null;
       this.reportUrl = null;
       this.closeAlert();
     },

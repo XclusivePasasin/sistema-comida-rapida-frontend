@@ -26,4 +26,9 @@ url: https://edisdev.github.io/vue-datepicker-ui/custom-style.html
 1 - npm install vue-datepicker-ui@vue3 --save
 
 ```
+### Install  Chart.js
+```
+1 - npm install chart.js vue-chartjs
+
+```
 

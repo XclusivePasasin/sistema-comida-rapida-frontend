@@ -245,8 +245,8 @@
           </div>
         </div>
 
-         <!-- Confirmation Modal for Delivery -->
-         <div
+        <!-- Confirmation Modal for Delivery -->
+        <div
           v-if="showConfirmModal"
           class="fixed inset-0 flex bg-gray-600 bg-opacity-75 items-center justify-center z-50"
         >
@@ -435,6 +435,7 @@
 import axios from "axios";
 import Sidebar from "@/components/SidebarComponent.vue";
 import Header from "@/components/HeaderComponent.vue";
+import { mapGetters } from "vuex";
 
 export default {
   name: "DeliveredOrdersView",
@@ -564,7 +565,10 @@ export default {
             status: 2,
           }
         );
-        console.log("Order status updated to paid:", this.orderToUpdate.id_table);
+        console.log(
+          "Order status updated to paid:",
+          this.orderToUpdate.id_table
+        );
         console.log("Order Data:", orderResponse.data);
 
         if (this.orderToUpdate.id_table) {
@@ -600,7 +604,17 @@ export default {
       }
     },
   },
+  computed: {
+    ...mapGetters(["getUserRole"]),
+
+    isCashier() {
+      return this.getUserRole === "C" || this.getUserRole === "A";
+    },
+  },
   mounted() {
+    if (!this.isCashier) {
+      this.$router.push({ name: "Dashboard" });
+    }
     this.fetchDeliveredOrders();
     this.fetchPaidOrders();
   },

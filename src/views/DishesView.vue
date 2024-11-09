@@ -261,6 +261,7 @@ import CreateDishModal from "@/components/CreateDishModal.vue";
 import EditDishModal from "@/components/EditDishModal.vue";
 import DeleteDishModal from "@/components/DeleteDishModal.vue";
 import { debounce } from "lodash";
+import { mapGetters } from 'vuex'
 
 export default {
   name: "DishesView",
@@ -407,7 +408,17 @@ export default {
     },
   },
   mounted() {
+    if (!this.isAdmin) {
+      this.$router.push({ name: 'Dashboard' });
+    }
     this.fetchDishes();
+  },
+  computed: {
+    ...mapGetters(['getUserRole']), 
+
+    isAdmin() {
+      return this.getUserRole === 'A';
+    }
   },
 };
 </script>

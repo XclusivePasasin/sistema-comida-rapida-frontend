@@ -247,6 +247,7 @@ import axios from "axios";
 import Sidebar from "@/components/SidebarComponent.vue";
 import Header from "@/components/HeaderComponent.vue";
 import { debounce } from "lodash";
+import { mapGetters } from 'vuex'
 // Import modals
 import CreateTablesModal from "@/components/Tables/CreateTablesModal.vue";
 import EditTablesModal from "@/components/Tables/EditTablesModal.vue";
@@ -411,7 +412,17 @@ export default {
     },
   },
   mounted() {
+    if (!this.isAdmin) {
+      this.$router.push({ name: 'Dashboard' });
+    }
     this.fetchTables();
+  },
+  computed: {
+    ...mapGetters(['getUserRole']), 
+
+    isAdmin() {
+      return this.getUserRole === 'A';
+    }
   },
 };
 </script>

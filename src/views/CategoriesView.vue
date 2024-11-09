@@ -73,7 +73,7 @@
 
                 <!-- Table Section with Scroll -->
                 <div
-                  class="overflow-y-auto max-h-[400px] scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-gray-500"
+                  class="overflow-y-auto max-h-[500px] scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-gray-500"
                 >
                   <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50 sticky top-0">
@@ -235,6 +235,7 @@ import { debounce } from "lodash";
 import CreateCategoriesModal from "@/components/CreateCategoriesModal.vue";
 import EditCategoriesModal from "@/components/EditCategoriesModal.vue";
 import DeleteCategoriesModal from "@/components/DeleteCategoriesModal.vue";
+import { mapGetters } from "vuex";
 
 export default {
   name: "UsersView",
@@ -397,7 +398,17 @@ export default {
       this.fetchCategories(page);
     },
   },
+  computed: {
+    ...mapGetters(["getUserRole"]),
+
+    isAdmin() {
+      return this.getUserRole === "A";
+    },
+  },
   mounted() {
+    if (!this.isAdmin) {
+      this.$router.push({ name: "Dashboard" });
+    }
     this.fetchCategories();
   },
 };

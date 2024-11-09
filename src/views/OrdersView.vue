@@ -13,7 +13,6 @@
         <div class="min-h-screen bg-gray-100 p-6">
           <div class="max-w-full mx-auto">
             <div class="bg-white shadow-sm rounded-lg overflow-hidden">
-              <!-- Alerta dinámica -->
               <div
                 v-if="alertMessage"
                 :class="alertClass"
@@ -21,7 +20,6 @@
               >
                 {{ alertMessage }}
               </div>
-              <!-- Contenedor que agrupa el título y el botón -->
               <div class="flex justify-between items-center p-6">
                 <h2 class="text-xl font-semibold text-gray-700">
                   Create Order
@@ -133,7 +131,6 @@
                         </button>
                       </div>
 
-                      <!-- Mensajes de validación -->
                       <p
                         v-if="customerExists === true"
                         class="text-green-500 mt-1"
