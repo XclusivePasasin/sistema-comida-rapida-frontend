@@ -266,7 +266,7 @@
 import axios from "axios";
 import Sidebar from "@/components/SidebarComponent.vue";
 import Header from "@/components/HeaderComponent.vue";
-import { mapGetters } from "vuex";
+// import { mapGetters } from "vuex";
 
 export default {
   name: "PendingOrdersView",
@@ -351,17 +351,9 @@ export default {
       }
     },
   },
-  computed: {
-    ...mapGetters(["getUserRole"]),
-
-    isWaiter() {
-      return this.getUserRole === "M" || this.getUserRole === "A";
-    },
-  },
+  
   mounted() {
-    if (!this.isWaiter) {
-      this.$router.push({ name: "Dashboard" });
-    }
+    
     this.fetchPendingOrders();
   },
 };

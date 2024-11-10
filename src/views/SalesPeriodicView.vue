@@ -113,7 +113,7 @@ import Header from "@/components/HeaderComponent.vue";
 import "vue-datepicker-ui/lib/vuedatepickerui.css";
 import VueDatepickerUi from "vue-datepicker-ui";
 import axios from "axios";
-import { mapGetters } from "vuex";
+// import { mapGetters } from "vuex";
 
 export default {
   name: "InvoiceView",
@@ -135,11 +135,6 @@ export default {
   computed: {
     alertClass() {
       return this.alertType === "success" ? "bg-emerald-500" : "bg-red-500";
-    },
-    ...mapGetters(["getUserRole"]),
-
-    isAdmin() {
-      return this.getUserRole === "A";
     },
   },
   methods: {
@@ -212,11 +207,7 @@ export default {
       this.closeAlert();
     },
   },
-  mounted() {
-    if (!this.isAdmin) {
-      this.$router.push({ name: "Dashboard" });
-    }
-  },
+  
 };
 </script>
 

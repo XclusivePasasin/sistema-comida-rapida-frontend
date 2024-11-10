@@ -252,7 +252,6 @@ import axios from "axios";
 import Sidebar from "@/components/SidebarComponent.vue";
 import Header from "@/components/HeaderComponent.vue";
 import { debounce } from "lodash";
-import { mapGetters } from "vuex";
 // Import modals
 import CreateCostumersModal from "@/components/CreateCustomerModal.vue";
 import EditCostumerModal from "@/components/EditCustomerModal.vue";
@@ -424,17 +423,7 @@ export default {
     this.fetchCostumers(page);
   },
   mounted() {
-    if (!this.isAdmin) {
-      this.$router.push({ name: "Dashboard" });
-    }
     this.fetchCostumers();
-  },
-  computed: {
-    ...mapGetters(["getUserRole"]),
-
-    isAdmin() {
-      return this.getUserRole === "A";
-    },
   },
 };
 </script>

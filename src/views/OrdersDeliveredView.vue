@@ -435,7 +435,7 @@
 import axios from "axios";
 import Sidebar from "@/components/SidebarComponent.vue";
 import Header from "@/components/HeaderComponent.vue";
-import { mapGetters } from "vuex";
+// import { mapGetters } from "vuex";
 
 export default {
   name: "DeliveredOrdersView",
@@ -604,17 +604,7 @@ export default {
       }
     },
   },
-  computed: {
-    ...mapGetters(["getUserRole"]),
-
-    isCashier() {
-      return this.getUserRole === "C" || this.getUserRole === "A";
-    },
-  },
   mounted() {
-    if (!this.isCashier) {
-      this.$router.push({ name: "Dashboard" });
-    }
     this.fetchDeliveredOrders();
     this.fetchPaidOrders();
   },
