@@ -235,7 +235,7 @@ import { debounce } from "lodash";
 import CreateCategoriesModal from "@/components/CreateCategoriesModal.vue";
 import EditCategoriesModal from "@/components/EditCategoriesModal.vue";
 import DeleteCategoriesModal from "@/components/DeleteCategoriesModal.vue";
-import { mapGetters } from "vuex";
+// import { mapGetters } from "vuex";
 
 export default {
   name: "UsersView",
@@ -398,17 +398,9 @@ export default {
       this.fetchCategories(page);
     },
   },
-  computed: {
-    ...mapGetters(["getUserRole"]),
-
-    isAdmin() {
-      return this.getUserRole === "A";
-    },
-  },
+ 
   mounted() {
-    if (!this.isAdmin) {
-      this.$router.push({ name: "Dashboard" });
-    }
+    
     this.fetchCategories();
   },
 };
