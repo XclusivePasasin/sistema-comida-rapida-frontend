@@ -266,7 +266,6 @@
 import axios from "axios";
 import Sidebar from "@/components/SidebarComponent.vue";
 import Header from "@/components/HeaderComponent.vue";
-// import { mapGetters } from "vuex";
 
 export default {
   name: "PendingOrdersView",
